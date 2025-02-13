@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coming Soon | Personal Website</title>
+    <title>Floating Cubes</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
@@ -48,8 +48,8 @@
         }
 
         function isPositionValid(x, y, scale) {
-            // Base minimum distance between cubes (adjusted by their scales)
-            const baseMinDistance = 150;
+            // Reduced minimum distance for more dense placement
+            const baseMinDistance = 100;
             
             for (const placedCube of placedCubes) {
                 const distance = calculateDistance(x, y, placedCube.x, placedCube.y);
@@ -63,12 +63,13 @@
         }
 
         function findValidPosition(scale) {
-            const maxAttempts = 50;
+            const maxAttempts = 100; // Increased attempts for better positioning
             let attempts = 0;
             
             while (attempts < maxAttempts) {
-                const x = getRandomPosition(80);
-                const y = getRandomPosition(80);
+                // Using full viewport range for positioning
+                const x = getRandomPosition(100);
+                const y = getRandomPosition(100);
                 
                 if (isPositionValid(x, y, scale)) {
                     return { x, y };
@@ -78,15 +79,15 @@
             
             // If we couldn't find a valid position, try with a smaller scale
             if (scale > 0.3) {
-                return findValidPosition(scale * 0.8);
+                return findValidPosition(scale * 0.9);
             }
             
             // Last resort: return a position far from others
             let maxDistance = 0;
             let bestPosition = { x: 0, y: 0 };
             
-            for (let x = 0; x < 80; x += 10) {
-                for (let y = 0; y < 80; y += 10) {
+            for (let x = 0; x < 100; x += 5) {
+                for (let y = 0; y < 100; y += 5) {
                     let minDistance = Infinity;
                     for (const cube of placedCubes) {
                         const distance = calculateDistance(x, y, cube.x, cube.y);
@@ -105,13 +106,13 @@
         function initShapes() {
             const container = document.getElementById('shapeContainer');
             placedCubes = []; // Reset placed cubes
-            const numCubes = 8; // Number of cubes to create
+            const numCubes = 12; // Increased number of cubes
 
             for (let i = 0; i < numCubes; i++) {
                 const cube = createCube();
                 
                 // Get scale first as it affects positioning
-                const scale = getRandomFloat(0.3, 1);
+                const scale = getRandomFloat(0.4, 1.2); // Wider scale range
                 
                 // Find valid position
                 const position = findValidPosition(scale);
@@ -131,7 +132,7 @@
                 cube.style.transform = `scale(${scale})`;
                 
                 // Random animation duration
-                const duration = getRandomFloat(20, 40);
+                const duration = getRandomFloat(25, 45); // Slower animations
                 cube.style.animationDuration = `${duration}s`;
                 
                 // Random animation direction
@@ -153,10 +154,14 @@
         window.addEventListener('load', initShapes);
         
         // Reinitialize shapes when window is resized
+        let resizeTimeout;
         window.addEventListener('resize', () => {
-            const container = document.getElementById('shapeContainer');
-            container.innerHTML = '';
-            initShapes();
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                const container = document.getElementById('shapeContainer');
+                container.innerHTML = '';
+                initShapes();
+            }, 250); // Debounce resize events
         });
 
         // Add resize observer to handle container size changes
