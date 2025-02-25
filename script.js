@@ -1,198 +1,317 @@
-   // Performance optimized cube management
-   class CubeManager {
-    constructor() {
-        this.placedCubes = [];
-        this.container = document.getElementById('shapeContainer');
-        this.isInitialized = false;
-        this.resizeTimeout = null;
-        this.boundInitialize = this.initialize.bind(this);
-        this.setupEventListeners();
-    }
+// Get the canvas element and its context
+const canvas = document.getElementById('particleCanvas');
+const ctx = canvas.getContext('2d');
 
-    setupEventListeners() {
-        window.addEventListener('load', this.boundInitialize);
-        window.addEventListener('resize', () => {
-            if (this.resizeTimeout) clearTimeout(this.resizeTimeout);
-            this.resizeTimeout = setTimeout(() => {
-                this.updateCubePositions();
-            }, 250);
-        });
-    }
+// Set canvas dimensions to window size
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
 
-    createCubeFaces() {
-        const fragment = document.createDocumentFragment();
-        ['front', 'back', 'right', 'left', 'top', 'bottom'].forEach(face => {
-            const div = document.createElement('div');
-            div.className = `cube-face face-${face}`;
-            fragment.appendChild(div);
-        });
-        return fragment;
-    }
+// Call resize on initial load and whenever window is resized
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
 
-    createCube() {
-        const cube = document.createElement('div');
-        cube.className = 'cube';
-        cube.appendChild(this.createCubeFaces());
-        return cube;
-    }
+// Mouse/Touch position
+const pointer = {
+    x: null,
+    y: null,
+    radius: 150,
+    active: false  // Track if pointer is currently active
+};
 
-    getRandomPosition(min, max) {
-        return min + Math.random() * (max - min);
-    }
+// Check if device is mobile
+const isMobileDevice = () => {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+           (window.matchMedia("(max-width: 768px)").matches);
+};
 
-    getRandomFloat(min, max) {
-        return Math.random() * (max - min) + min;
-    }
+// Settings based on device
+const settings = {
+    particleCount: isMobileDevice() ? 60 : 120,
+    particleBaseSize: isMobileDevice() ? 2 : 3,
+    particleAddedSize: isMobileDevice() ? 3 : 5,
+    particleMaxSpeed: 4,
+    particleBaseSpeed: isMobileDevice() ? 0.8 : 1,
+    connectionDistance: isMobileDevice() ? 100 : 150,
+    interactionRadius: isMobileDevice() ? 120 : 180,
+    glowEffect: true,
+    trailEffect: true,
+    trailLength: isMobileDevice() ? 3 : 5
+};
 
-    calculateDistance(x1, y1, x2, y2) {
-        const dx = x2 - x1;
-        const dy = y2 - y1;
-        return Math.sqrt(dx * dx + dy * dy);
-    }
+// Update pointer radius based on device
+pointer.radius = settings.interactionRadius;
 
-    isPositionValid(x, y, scale, viewportWidth, viewportHeight) {
-        // Get base cube size
-        const baseCubeSize = window.innerWidth < 768 ? 80 : 120;
-        const cubeSize = baseCubeSize * scale;
-        
-        // Check viewport boundaries with padding
-        const padding = 20;
-        if (x - cubeSize/2 < padding || 
-            x + cubeSize/2 > viewportWidth - padding || 
-            y - cubeSize/2 < padding || 
-            y + cubeSize/2 > viewportHeight - padding) {
-            return false;
+// Color palettes - we'll use these for a more cohesive look
+const colorPalettes = [
+    // Neon glow palette
+    ['#f72585', '#b5179e', '#7209b7', '#560bad', '#480ca8', '#3a0ca3', '#3f37c9', '#4361ee', '#4895ef', '#4cc9f0'],
+    // Sunset palette
+    ['#ff7b00', '#ff8800', '#ff9500', '#ffa200', '#ffaa00', '#ffb700', '#ffc300', '#ffd000', '#ffdd00', '#ffea00'],
+    // Ocean palette
+    ['#03045e', '#023e8a', '#0077b6', '#0096c7', '#00b4d8', '#48cae4', '#90e0ef', '#ade8f4', '#caf0f8']
+];
+
+// Select a random color palette
+const activePalette = colorPalettes[Math.floor(Math.random() * colorPalettes.length)];
+
+// Update pointer position on mouse move
+window.addEventListener('mousemove', function(event) {
+    pointer.x = event.x;
+    pointer.y = event.y;
+    pointer.active = true;
+});
+
+// Add touch support
+window.addEventListener('touchstart', function(event) {
+    event.preventDefault();
+    pointer.x = event.touches[0].clientX;
+    pointer.y = event.touches[0].clientY;
+    pointer.active = true;
+});
+
+window.addEventListener('touchmove', function(event) {
+    event.preventDefault();
+    pointer.x = event.touches[0].clientX;
+    pointer.y = event.touches[0].clientY;
+});
+
+window.addEventListener('touchend', function() {
+    pointer.active = false;
+    // Don't reset coordinates to allow particles to continue moving away
+});
+
+// Reset pointer active state when mouse leaves window
+window.addEventListener('mouseleave', function() {
+    pointer.active = false;
+});
+
+// Handle click/tap to create additional particles
+window.addEventListener('click', createParticlesAtPointer);
+window.addEventListener('touchend', createParticlesAtPointer);
+
+// Function to create particles at current pointer position
+function createParticlesAtPointer(event) {
+    if (!pointer.x || !pointer.y) return;
+    
+    // Add 5-10 new particles at the pointer position
+    const newParticleCount = isMobileDevice() ? 5 : 10;
+    for (let i = 0; i < newParticleCount; i++) {
+        if (particles.length < settings.particleCount * 1.5) { // Limit max particles
+            const newParticle = new Particle(pointer.x, pointer.y);
+            // Give the new particle a velocity away from the pointer
+            const angle = Math.random() * Math.PI * 2;
+            const speed = Math.random() * 5 + 2;
+            newParticle.speedX = Math.cos(angle) * speed;
+            newParticle.speedY = Math.sin(angle) * speed;
+            particles.push(newParticle);
         }
-
-        // Check distance from other cubes
-        const minDistance = baseCubeSize * 1.2; // 20% extra space between cubes
-        return this.placedCubes.every(cube => {
-            const distance = this.calculateDistance(x, y, cube.x, cube.y);
-            const requiredDistance = minDistance * (scale + cube.scale) / 2;
-            return distance >= requiredDistance;
-        });
-    }
-
-    findValidPosition(scale, viewportWidth, viewportHeight) {
-        const maxAttempts = 100; // Increased attempts
-        const padding = 20;
-        const baseCubeSize = window.innerWidth < 768 ? 80 : 120;
-        const effectiveWidth = viewportWidth - padding * 2;
-        const effectiveHeight = viewportHeight - padding * 2;
-        
-        // Grid-based positioning attempt first
-        const gridSize = baseCubeSize * 1.5; // Grid cells are 1.5x cube size
-        const cols = Math.floor(effectiveWidth / gridSize);
-        const rows = Math.floor(effectiveHeight / gridSize);
-        
-        for (let i = 0; i < maxAttempts; i++) {
-            // Try grid-based position first
-            const col = Math.floor(Math.random() * cols);
-            const row = Math.floor(Math.random() * rows);
-            const x = padding + col * gridSize + gridSize/2;
-            const y = padding + row * gridSize + gridSize/2;
-            
-            if (this.isPositionValid(x, y, scale, viewportWidth, viewportHeight)) {
-                return { x, y };
-            }
-            
-            // If grid position fails, try random position
-            const randX = this.getRandomPosition(padding + baseCubeSize/2, viewportWidth - padding - baseCubeSize/2);
-            const randY = this.getRandomPosition(padding + baseCubeSize/2, viewportHeight - padding - baseCubeSize/2);
-            
-            if (this.isPositionValid(randX, randY, scale, viewportWidth, viewportHeight)) {
-                return { x: randX, y: randY };
-            }
-        }
-        
-        // If no valid position found, try to find the position furthest from all other cubes
-        let bestPosition = null;
-        let maxMinDistance = 0;
-        
-        for (let x = padding; x < viewportWidth - padding; x += gridSize) {
-            for (let y = padding; y < viewportHeight - padding; y += gridSize) {
-                let minDistance = Infinity;
-                for (const cube of this.placedCubes) {
-                    const distance = this.calculateDistance(x, y, cube.x, cube.y);
-                    minDistance = Math.min(minDistance, distance);
-                }
-                if (minDistance > maxMinDistance) {
-                    maxMinDistance = minDistance;
-                    bestPosition = { x, y };
-                }
-            }
-        }
-        
-        return bestPosition || { 
-            x: viewportWidth / 2, 
-            y: viewportHeight / 2 
-        };
-    }
-
-    updateCubePositions() {
-        const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
-
-        this.placedCubes.forEach(cube => {
-            const position = this.findValidPosition(cube.scale, viewportWidth, viewportHeight);
-            cube.element.style.left = `${(position.x / viewportWidth) * 100}%`;
-            cube.element.style.top = `${(position.y / viewportHeight) * 100}%`;
-            cube.x = position.x;
-            cube.y = position.y;
-        });
-    }
-
-    initialize() {
-        if (this.isInitialized) return;
-        
-        const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
-        
-        // Calculate maximum number of cubes based on viewport size
-        const baseCubeSize = viewportWidth < 768 ? 80 : 120;
-        const gridSize = baseCubeSize * 1.5;
-        const maxCols = Math.floor(viewportWidth / gridSize);
-        const maxRows = Math.floor(viewportHeight / gridSize);
-        const maxCubes = Math.min(Math.floor((maxCols * maxRows) / 2), viewportWidth < 768 ? 6 : 8);
-
-        this.container.innerHTML = '';
-        this.placedCubes = [];
-
-        for (let i = 0; i < maxCubes; i++) {
-            const cube = this.createCube();
-            const scale = this.getRandomFloat(0.4, 1);
-            const position = this.findValidPosition(scale, viewportWidth, viewportHeight);
-            
-            if (!position) continue; // Skip if no valid position found
-            
-            cube.style.left = `${(position.x / viewportWidth) * 100}%`;
-            cube.style.top = `${(position.y / viewportHeight) * 100}%`;
-            cube.style.transform = `scale(${scale})`;
-            
-            // Randomize animation
-            const duration = this.getRandomFloat(30, 40);
-            cube.style.animationDuration = `${duration}s`;
-            cube.style.animationDirection = Math.random() > 0.5 ? 'reverse' : 'normal';
-            
-            // Random initial rotation for variety
-            const rotX = this.getRandomPosition(0, 360);
-            const rotY = this.getRandomPosition(0, 360);
-            const rotZ = this.getRandomPosition(0, 360);
-            cube.style.transform += ` rotateX(${rotX}deg) rotateY(${rotY}deg) rotateZ(${rotZ}deg)`;
-            
-            this.placedCubes.push({
-                element: cube,
-                x: position.x,
-                y: position.y,
-                scale: scale
-            });
-            
-            this.container.appendChild(cube);
-        }
-
-        this.isInitialized = true;
     }
 }
 
-// Initialize the cube manager
-const cubeManager = new CubeManager();
+// Particle class
+class Particle {
+    constructor(x, y) {
+        // If x and y are provided, use them; otherwise, use random position
+        this.x = x !== undefined ? x : Math.random() * canvas.width;
+        this.y = y !== undefined ? y : Math.random() * canvas.height;
+        this.size = Math.random() * settings.particleBaseSize + 1;
+        this.baseSize = this.size;
+        this.speedX = (Math.random() * 2 - 1) * settings.particleBaseSpeed;
+        this.speedY = (Math.random() * 2 - 1) * settings.particleBaseSpeed;
+        this.color = this.getRandomColor();
+        
+        // For trail effect
+        this.trail = [];
+        this.trailLength = Math.floor(Math.random() * settings.trailLength) + 1;
+        
+        // Add slight oscillation/pulsing
+        this.angle = Math.random() * Math.PI * 2;
+        this.angleSpeed = Math.random() * 0.04 + 0.01;
+        this.glowSize = 0;
+    }
+
+    // Generate random colors from the active palette
+    getRandomColor() {
+        return activePalette[Math.floor(Math.random() * activePalette.length)];
+    }
+
+    // Update particle position and handle boundary checks
+    update() {
+        // Store previous position for trail
+        if (settings.trailEffect) {
+            this.trail.unshift({ x: this.x, y: this.y, size: this.size });
+            if (this.trail.length > this.trailLength) {
+                this.trail.pop();
+            }
+        }
+        
+        // Update position
+        this.x += this.speedX;
+        this.y += this.speedY;
+        
+        // Gradually slow down particles
+        this.speedX *= 0.99;
+        this.speedY *= 0.99;
+
+        // Slight oscillation effect
+        this.size = this.baseSize + Math.sin(this.angle) * 0.5;
+        this.angle += this.angleSpeed;
+
+        // Boundary checks with bounce
+        if (this.x + this.size > canvas.width || this.x - this.size < 0) {
+            this.speedX = -this.speedX * 0.9;
+            
+            // Fix position if outside boundary
+            if (this.x + this.size > canvas.width) {
+                this.x = canvas.width - this.size;
+            } else if (this.x - this.size < 0) {
+                this.x = this.size;
+            }
+        }
+        
+        if (this.y + this.size > canvas.height || this.y - this.size < 0) {
+            this.speedY = -this.speedY * 0.9;
+            
+            // Fix position if outside boundary
+            if (this.y + this.size > canvas.height) {
+                this.y = canvas.height - this.size;
+            } else if (this.y - this.size < 0) {
+                this.y = this.size;
+            }
+        }
+
+        // Pointer interaction
+        if (pointer.x !== null && pointer.y !== null) {
+            const dx = pointer.x - this.x;
+            const dy = pointer.y - this.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < pointer.radius) {
+                // Particle is within pointer radius
+                const forceDirectionX = dx / distance;
+                const forceDirectionY = dy / distance;
+                const force = (pointer.radius - distance) / pointer.radius;
+                const repelForce = pointer.active ? -1 : 0.5; // Repel when active, gently attract when inactive
+                
+                // Calculate movement based on force
+                this.speedX += forceDirectionX * force * 0.6 * repelForce;
+                this.speedY += forceDirectionY * force * 0.6 * repelForce;
+                
+                // Limit speed
+                this.speedX = Math.min(Math.max(this.speedX, -settings.particleMaxSpeed), settings.particleMaxSpeed);
+                this.speedY = Math.min(Math.max(this.speedY, -settings.particleMaxSpeed), settings.particleMaxSpeed);
+                
+                // Increase size when near pointer
+                this.size = this.baseSize + (force * settings.particleAddedSize);
+                
+                // Increase glow effect
+                this.glowSize = force * 10;
+            } else {
+                // Return to original size
+                if (this.size > this.baseSize) {
+                    this.size -= 0.1;
+                }
+                
+                // Reduce glow effect
+                if (this.glowSize > 0) {
+                    this.glowSize -= 0.1;
+                }
+            }
+        } else {
+            // Return to original size when no pointer
+            if (this.size > this.baseSize) {
+                this.size -= 0.1;
+            }
+            
+            // Reduce glow effect
+            if (this.glowSize > 0) {
+                this.glowSize -= 0.1;
+            }
+        }
+    }
+
+    // Draw the particle
+    draw() {
+        // Draw trail
+        if (settings.trailEffect && this.trail.length > 1) {
+            for (let i = 0; i < this.trail.length; i++) {
+                const point = this.trail[i];
+                const opacity = (this.trail.length - i) / this.trail.length;
+                ctx.fillStyle = this.color + Math.floor(opacity * 99).toString(16).padStart(2, '0');
+                ctx.beginPath();
+                ctx.arc(point.x, point.y, point.size * opacity, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+        
+        // Draw particle
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Add glow effect
+        if (settings.glowEffect && this.glowSize > 0) {
+            ctx.save();
+            ctx.globalAlpha = 0.15;
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size + this.glowSize, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+    }
+}
+
+// Create particle array
+const particles = [];
+
+function init() {
+    for (let i = 0; i < settings.particleCount; i++) {
+        particles.push(new Particle());
+    }
+}
+
+// Connect particles with lines if they're close enough
+function connectParticles() {
+    const maxDistance = settings.connectionDistance;
+    for (let i = 0; i < particles.length; i++) {
+        for (let j = i; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < maxDistance) {
+                // Set opacity based on distance
+                const opacity = 1 - (distance / maxDistance);
+                ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * 0.3})`;
+                ctx.lineWidth = opacity * 1.5;
+                ctx.beginPath();
+                ctx.moveTo(particles[i].x, particles[i].y);
+                ctx.lineTo(particles[j].x, particles[j].y);
+                ctx.stroke();
+            }
+        }
+    }
+}
+
+// Animation loop
+function animate() {
+    // Apply a semi-transparent clear for trail effect
+    ctx.fillStyle = 'rgba(15, 12, 41, 0.1)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    for (let i = 0; i < particles.length; i++) {
+        particles[i].update();
+        particles[i].draw();
+    }
+    
+    connectParticles();
+    requestAnimationFrame(animate);
+}
+
+// Initialize and start animation
+init();
+animate();
