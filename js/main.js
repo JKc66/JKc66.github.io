@@ -75,12 +75,7 @@ function animate() {
     
     // Draw team stats
     drawTeamStats();
-    
-    // Check for tooltip hover
-    checkTooltipHover();
-    
-    // Draw tooltip
-    drawTooltip();
+
     
     requestAnimationFrame(animate);
 }
