@@ -77,10 +77,10 @@ function boostNearbyCreatures(event) {
     // Determine which team is currently dominating
     const redScore = teamStats[TEAMS.RED].score;
     const blueScore = teamStats[TEAMS.BLUE].score;
-    const dominantTeam = redScore < blueScore ? TEAMS.BLUE : TEAMS.RED;
+    const dominantTeam = redScore > blueScore ? TEAMS.RED : TEAMS.BLUE;
     
     // Boost creatures of the non-dominant team to balance the game
-    const teamToBoost = redScore >= blueScore ? TEAMS.RED : TEAMS.BLUE;
+    const teamToBoost = redScore < blueScore ? TEAMS.RED : TEAMS.BLUE;
     
     // Find nearby creatures of the team to boost
     let nearbyCreatures = creatures.filter(c => 
