@@ -8,7 +8,7 @@ function checkTooltipHover() {
     // Get canvas dimensions
     const canvasWidth = canvas.width;
     const panelWidth = Math.min(320, canvasWidth * 0.25);
-    const panelHeight = 180; // Updated to match the new panel height
+    const panelHeight = 190; // Updated to match the new panel height
     const panelX = canvasWidth - panelWidth - 15;
     const panelY = 15;
     const padding = 15;
@@ -171,7 +171,7 @@ function drawTeamStats() {
     
     // Panel dimensions and positioning
     const panelWidth = Math.min(320, canvasWidth * 0.25);
-    const panelHeight = 180; // Reduced height since we're removing the tooltip
+    const panelHeight = 190; // Increased height to accommodate the enhanced score display
     const padding = 15;
     const cornerRadius = 10;
     
@@ -233,53 +233,113 @@ function drawTeamStats() {
     ctx.fillText(`Gen ${generation} • Time ${timeString}`, panelX + padding, panelY + padding * 2 + 12);
     
     // Draw progress bar for score comparison
-    const barHeight = 10;
+    const barHeight = 12; // Slightly taller bar
     const barY = panelY + padding * 2 + 20;
     const barWidth = panelWidth - padding * 2;
     
-    // Background
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+    // Background with better contrast
+    ctx.fillStyle = 'rgba(20, 20, 40, 0.4)';
     roundedRect(ctx, panelX + padding, barY, barWidth, barHeight, barHeight/2);
     ctx.fill();
     
-    // Red team progress
-    const redWidth = Math.max(barWidth * (redScore / totalScore), 5);
-    ctx.fillStyle = teamColors[TEAMS.RED].base;
-    if (redWidth > 5) {
-        ctx.beginPath();
-        ctx.moveTo(panelX + padding + barHeight/2, barY);
-        ctx.lineTo(panelX + padding + redWidth - barHeight/2, barY);
-        ctx.arc(panelX + padding + redWidth - barHeight/2, barY + barHeight/2, barHeight/2, -Math.PI/2, Math.PI/2);
-        ctx.lineTo(panelX + padding + barHeight/2, barY + barHeight);
-        ctx.arc(panelX + padding + barHeight/2, barY + barHeight/2, barHeight/2, Math.PI/2, -Math.PI/2);
-        ctx.fill();
+    // Add subtle border to the background
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+    ctx.lineWidth = 1;
+    roundedRect(ctx, panelX + padding, barY, barWidth, barHeight, barHeight/2);
+    ctx.stroke();
+    
+    // Calculate proportional widths for a single bar
+    const redProportion = redScore / totalScore;
+    const redWidth = Math.max(Math.min(barWidth * redProportion, barWidth), 5);
+    
+    // Create clipping region for rounded corners on progress bar
+    ctx.save();
+    roundedRect(ctx, panelX + padding, barY, barWidth, barHeight, barHeight/2);
+    ctx.clip();
+    
+    // Draw the blue background first (full width)
+    ctx.fillStyle = teamColors[TEAMS.BLUE].base;
+    ctx.fillRect(panelX + padding, barY, barWidth, barHeight);
+    
+    // Add glowing effect to blue side
+    const blueGradient = ctx.createLinearGradient(
+        panelX + padding, 
+        barY, 
+        panelX + padding + barWidth, 
+        barY + barHeight
+    );
+    blueGradient.addColorStop(0, 'rgba(100, 100, 255, 0.7)');
+    blueGradient.addColorStop(1, 'rgba(0, 0, 255, 0.5)');
+    ctx.fillStyle = blueGradient;
+    ctx.fillRect(panelX + padding, barY, barWidth, barHeight/2);
+    
+    // Then overlay the red part on top (from left)
+    if (redProportion > 0) {
+        ctx.fillStyle = teamColors[TEAMS.RED].base;
+        ctx.fillRect(panelX + padding, barY, redWidth, barHeight);
+        
+        // Add glowing effect to red side
+        const redGradient = ctx.createLinearGradient(
+            panelX + padding, 
+            barY, 
+            panelX + padding + redWidth, 
+            barY + barHeight
+        );
+        redGradient.addColorStop(0, 'rgba(255, 100, 100, 0.7)');
+        redGradient.addColorStop(1, 'rgba(255, 0, 0, 0.5)');
+        ctx.fillStyle = redGradient;
+        ctx.fillRect(panelX + padding, barY, redWidth, barHeight/2);
     }
     
-    // Blue team progress
-    const blueWidth = Math.max(barWidth * (blueScore / totalScore), 5);
-    ctx.fillStyle = teamColors[TEAMS.BLUE].base;
-    if (blueWidth > 5) {
-        ctx.beginPath();
-        ctx.moveTo(panelX + padding + barWidth - barHeight/2, barY);
-        ctx.lineTo(panelX + padding + barWidth - blueWidth + barHeight/2, barY);
-        ctx.arc(panelX + padding + barWidth - blueWidth + barHeight/2, barY + barHeight/2, barHeight/2, -Math.PI/2, Math.PI * 3/2, true);
-        ctx.lineTo(panelX + padding + barWidth - barHeight/2, barY + barHeight);
-        ctx.arc(panelX + padding + barWidth - barHeight/2, barY + barHeight/2, barHeight/2, Math.PI/2, -Math.PI/2, true);
-        ctx.fill();
+    // Draw dividing line where red meets blue (if red has any width)
+    if (redProportion > 0 && redProportion < 1) {
+        const dividerX = panelX + padding + redWidth;
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+        ctx.fillRect(dividerX - 1, barY, 2, barHeight);
     }
     
-    // Score labels with improved styling
-    ctx.font = 'bold 12px Arial';
+    ctx.restore(); // Remove clipping region
+    
+    // Score labels with improved styling and better positioning
+    ctx.font = 'bold 16px Arial'; // Larger font
+    
+    // Add score boxes for better visibility
+    // Red score box
+    const scoreBoxHeight = 20;
+    const scoreBoxPadding = 8;
+    
+    // Draw red score with better visibility
+    ctx.fillStyle = 'rgba(30, 30, 50, 0.7)';
+    roundedRect(ctx, panelX + padding, barY + barHeight + 5, 40, scoreBoxHeight, 5);
+    ctx.fill();
+    ctx.strokeStyle = teamColors[TEAMS.RED].base;
+    ctx.lineWidth = 1.5;
+    roundedRect(ctx, panelX + padding, barY + barHeight + 5, 40, scoreBoxHeight, 5);
+    ctx.stroke();
+    
+    // Draw red score text
     ctx.fillStyle = teamColors[TEAMS.RED].base;
-    ctx.textAlign = 'left';
-    ctx.fillText(`${redScore}`, panelX + padding, barY + barHeight + 15);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(`${redScore}`, panelX + padding + 20, barY + barHeight + 15);
     
+    // Draw blue score with better visibility
+    ctx.fillStyle = 'rgba(30, 30, 50, 0.7)';
+    roundedRect(ctx, panelX + panelWidth - padding - 40, barY + barHeight + 5, 40, scoreBoxHeight, 5);
+    ctx.fill();
+    ctx.strokeStyle = teamColors[TEAMS.BLUE].base;
+    ctx.lineWidth = 1.5;
+    roundedRect(ctx, panelX + panelWidth - padding - 40, barY + barHeight + 5, 40, scoreBoxHeight, 5);
+    ctx.stroke();
+    
+    // Draw blue score text
     ctx.fillStyle = teamColors[TEAMS.BLUE].base;
-    ctx.textAlign = 'right';
-    ctx.fillText(`${blueScore}`, panelX + panelWidth - padding, barY + barHeight + 15);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(`${blueScore}`, panelX + panelWidth - padding - 20, barY + barHeight + 15);
     
-    // Team sections vertical positions
-    const teamSectionY = barY + barHeight + 25;
+    // Team sections vertical positions - adjusted for new score display
+    const teamSectionY = barY + barHeight + 35; // Moved down to accommodate score boxes
     const teamRowHeight = 22;
     
     // Draw team logos in a better position
