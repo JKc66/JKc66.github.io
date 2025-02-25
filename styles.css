@@ -18,10 +18,11 @@ html, body {
 
 body {
     position: fixed;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Exo 2', sans-serif;
     background: linear-gradient(45deg, #0f0c29, #302b63, #24243e);
     background-size: 400% 400%;
     animation: gradientBG 15s ease infinite;
+    color: rgba(255, 255, 255, 0.9);
 }
 
 @keyframes gradientBG {
@@ -44,4 +45,341 @@ body {
     height: 100%;
     display: block;
     filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.1));
+    z-index: 0;
+}
+    
+/* Settings Toggle Button */
+#settingsToggle {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(15, 12, 41, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+    transition: all 0.3s ease;
+}
+
+#settingsToggle:hover {
+    transform: rotate(45deg);
+    background: rgba(30, 25, 70, 0.9);
+}
+
+/* Control Panel Styles */
+#controlPanel {
+    position: absolute;
+    bottom: 80px;
+    right: 20px;
+    width: 320px;
+    background: rgba(15, 12, 41, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    z-index: 99;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    transform-origin: bottom right;
+}
+
+#controlPanel.hidden {
+    transform: scale(0.9);
+    opacity: 0;
+    pointer-events: none;
+}
+
+#controlPanel .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#controlPanel h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+    background: linear-gradient(45deg, #FF3A3A, #3A3AFF);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#infoToggle {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 1.2rem;
+}
+
+#infoToggle:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.control-group label {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    font-weight: 400;
+}
+
+.control-group input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    outline: none;
+}
+
+.control-group input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    background: linear-gradient(45deg, #FF3A3A, #3A3AFF);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+}
+
+.control-group input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+}
+
+/* Toggle Switch Styles */
+.control-group.toggle {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2px 0;
+}
+
+.control-group.toggle label {
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.control-group.toggle label:hover {
+    opacity: 1;
+}
+
+.control-group.toggle input {
+    display: none;
+}
+
+.toggle-slider {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 24px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.toggle-slider:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.toggle-slider:active {
+    transform: scale(0.95);
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+input:checked + .toggle-slider {
+    background: linear-gradient(45deg, #FF3A3A, #3A3AFF);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+input:checked + .toggle-slider:before {
+    transform: translateX(24px);
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+}
+
+.actions button {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.actions button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Info Panel Styles */
+#infoPanel {
+    position: absolute;
+    top: 220px;
+    left: 20px;
+    width: 350px;
+    max-height: calc(100vh - 240px);
+    background: rgba(15, 12, 41, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    z-index: 98;
+    overflow-y: auto;
+    transform: translateX(-400px);
+    transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+#infoPanel.active {
+    transform: translateX(0);
+}
+
+#infoPanel h2 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: white;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+}
+
+#infoPanel h3 {
+    font-size: 1.1rem;
+    margin: 20px 0 10px;
+    color: white;
+}
+
+#infoPanel p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 15px;
+    opacity: 0.9;
+}
+
+.abilities-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.abilities-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.ability-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    font-size: 1.1rem;
+}
+
+.footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+#closeInfo {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+#closeInfo:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+    #controlPanel {
+        bottom: 80px;
+        right: 20px;
+        width: calc(100% - 40px);
+        max-height: 50vh;
+        overflow-y: auto;
+    }
+    
+    #infoPanel {
+        width: calc(100% - 40px);
+        max-height: 60vh;
+    }
+    
+    .actions {
+        flex-direction: column;
+    }
 }

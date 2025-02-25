@@ -30,6 +30,10 @@ class Creature {
         this.abilities = {};
         this.abilityLevels = {};
         
+        // Initialize trail array for visual effects
+        this.trail = [];
+        this.glowSize = 0;
+        
         // If we have parents, inherit properties (genetic reproduction)
         if (parent1 && parent2 && settings.geneticEnabled) {
             // Inherit position from either parent with some randomness
@@ -84,13 +88,9 @@ class Creature {
         
         this.size = this.baseSize;
         
-        // For trail effect
-        this.trail = [];
-        
         // Add slight oscillation/pulsing
         this.angle = Math.random() * Math.PI * 2;
         this.angleSpeed = Math.random() * 0.04 + 0.01;
-        this.glowSize = 0;
         
         // Increment team count
         teamStats[this.team].count++;

@@ -1,6 +1,7 @@
 // Draw team stats with improved design
 function drawTeamStats() {
-    if (!settings.showTeamScores) return;
+    // Check both settings to determine whether to show stats
+    if (!settings.showTeamScores || !settings.showStats) return;
     
     ctx.save();
     
@@ -14,8 +15,8 @@ function drawTeamStats() {
     const padding = 15;
     const cornerRadius = 10;
     
-    // Position in top right with margin
-    const panelX = canvasWidth - panelWidth - 15;
+    // Position in top left with margin
+    const panelX = 15;
     const panelY = 15;
     
     // Get total score for progress bar calculations

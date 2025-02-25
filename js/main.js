@@ -1,7 +1,8 @@
 // Animation loop
 function animate() {
     // Apply a semi-transparent clear for trail effect
-    ctx.fillStyle = 'rgba(15, 12, 41, 0.1)';
+    const trailOpacity = settings.trailEffect ? 0.1 : 1.0;
+    ctx.fillStyle = `rgba(15, 12, 41, ${trailOpacity})`;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
     // Update genetic evolution

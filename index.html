@@ -7,9 +7,73 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧬</text></svg>">
     <meta name="theme-color" content="#0f0c29">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <canvas id="particleCanvas"></canvas>
+    
+    <!-- Settings Toggle Button -->
+    <button id="settingsToggle" aria-label="Toggle Settings">⚙️</button>
+    
+    <div id="controlPanel" class="hidden">
+        <div class="header">
+            <h1>Genetic Evolution</h1>
+            <button id="infoToggle" aria-label="Toggle Info"><span>ⓘ</span></button>
+        </div>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label for="evolutionRate">Evolution Rate</label>
+                <input type="range" id="evolutionRate" min="0" max="0.05" step="0.005" value="0.01">
+            </div>
+            
+            <div class="control-group">
+                <label for="initialCount">Creature Count</label>
+                <input type="range" id="initialCount" min="20" max="200" step="10">
+            </div>
+            
+            <div class="control-group toggle">
+                <label for="showStats">Show Stats</label>
+                <input type="checkbox" id="showStats" checked>
+                <span class="toggle-slider"></span>
+            </div>
+            
+            <div class="control-group toggle">
+                <label for="glowEffect">Glow Effects</label>
+                <input type="checkbox" id="glowEffect" checked>
+                <span class="toggle-slider"></span>
+            </div>
+        </div>
+        
+        <div class="actions">
+            <button id="resetBtn">Reset Simulation</button>
+            <button id="balanceBtn">Balance Teams</button>
+        </div>
+    </div>
+    
+    <div id="infoPanel">
+        <h2>About This Simulation</h2>
+        <p>Watch as red and blue creatures evolve through natural selection. Each creature has unique abilities that can be passed to offspring with potential mutations.</p>
+        
+        <h3>Abilities</h3>
+        <ul class="abilities-list">
+            <li><span class="ability-icon">⚡</span> <strong>Speed</strong>: Move faster to catch prey or escape predators</li>
+            <li><span class="ability-icon">💪</span> <strong>Strength</strong>: Deal more damage in combat</li>
+            <li><span class="ability-icon">🔭</span> <strong>Range</strong>: Detect enemies and allies from further away</li>
+            <li><span class="ability-icon">🛡️</span> <strong>Shield</strong>: Reduce damage taken from attacks</li>
+            <li><span class="ability-icon">❤️</span> <strong>Heal</strong>: Restore health to nearby allies</li>
+            <li><span class="ability-icon">🧬</span> <strong>Reproduce</strong>: More efficiently create offspring</li>
+        </ul>
+        
+        <h3>Interaction</h3>
+        <p>Click or tap anywhere to boost nearby creatures of the team that's falling behind, helping maintain evolutionary balance.</p>
+        
+        <div class="footer">
+            <button id="closeInfo">Close</button>
+        </div>
+    </div>
     
     <!-- Load JS files in correct dependency order -->
     <script src="js/config.js"></script>
@@ -20,5 +84,6 @@
     <script src="js/ui.js"></script>
     <script src="js/evolution.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/controls.js"></script>
 </body>
 </html>
