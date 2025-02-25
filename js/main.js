@@ -24,6 +24,15 @@ function animate() {
         }
     }
     
+    // Update visual effects
+    updateEnergyEffects();
+    updateHealEffects();
+    
+    // Update death effects if available
+    if (typeof updateDeathEffects === 'function') {
+        updateDeathEffects();
+    }
+    
     // Ensure minimum population for each team
     const minTeamSize = Math.max(5, settings.initialCreatureCount / 4);
     [TEAMS.RED, TEAMS.BLUE].forEach(team => {
@@ -69,10 +78,6 @@ function animate() {
         if (a.deceased !== b.deceased) return a.deceased ? -1 : 1;
         return a.size - b.size;
     }).forEach(creature => creature.draw());
-    
-    // Update and draw effects
-    updateEnergyEffects();
-    updateHealEffects();
     
     // Draw team stats
     drawTeamStats();

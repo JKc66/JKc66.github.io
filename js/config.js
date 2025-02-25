@@ -24,14 +24,14 @@ const ABILITIES = {
 const settings = {
     initialCreatureCount: isMobileDevice() ? 30 : 60,
     maxCreatures: isMobileDevice() ? 60 : 120,
-    creatureBaseSize: isMobileDevice() ? 4 : 6,
+    creatureBaseSize: isMobileDevice() ? 6 : 10,
     creatureMaxSpeed: 3,
     creatureBaseSpeed: isMobileDevice() ? 0.6 : 0.9,
     visionRadius: isMobileDevice() ? 100 : 150,
     interactionRadius: isMobileDevice() ? 80 : 120,
     glowEffect: true,
     trailEffect: true,
-    trailLength: isMobileDevice() ? 2 : 4,
+    trailLength: isMobileDevice() ? 3 : 6,
     
     // Team balance
     teamRatio: 0.5, // 50% red, 50% blue

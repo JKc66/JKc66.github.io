@@ -349,6 +349,13 @@ class Creature {
         if (this.health <= 0 || this.age >= this.lifespan) {
             this.deceased = true;
             teamStats[this.team].count--;
+            
+            // Create death effect when creature dies
+            if (typeof createDeathEffect === 'function') {
+                const teamColor = teamColors[this.team];
+                createDeathEffect(this.x, this.y, this.health <= 0 ? teamColor.dead : teamColor.base, this.size);
+            }
+            
             return false;
         }
         
@@ -550,16 +557,60 @@ class Creature {
     
     // Create attack visual effect
     createAttackEffect(target, damageAmount) {
-        // Draw line from attacker to target
+        // Get team colors for consistent visuals
+        const attackerColor = teamColors[this.team].base;
+        
+        // Draw animated line from attacker to target
         ctx.beginPath();
         ctx.moveTo(this.x, this.y);
-        ctx.lineTo(target.x, target.y);
-        ctx.strokeStyle = this.team === TEAMS.RED ? 'rgba(255,0,0,0.6)' : 'rgba(0,0,255,0.6)';
-        ctx.lineWidth = damageAmount * 8;
+        
+        // Calculate distance and midpoint for arc effect
+        const dx = target.x - this.x;
+        const dy = target.y - this.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        // Create a curved attack line instead of straight
+        const controlPointX = (this.x + target.x) / 2 - dy * 0.3; // Offset perpendicular to line
+        const controlPointY = (this.y + target.y) / 2 + dx * 0.3;
+        
+        ctx.quadraticCurveTo(controlPointX, controlPointY, target.x, target.y);
+        
+        // Gradient line for more visual appeal
+        const gradient = ctx.createLinearGradient(this.x, this.y, target.x, target.y);
+        gradient.addColorStop(0, attackerColor);
+        gradient.addColorStop(1, 'white');
+        
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = damageAmount * 10; // Make line thicker for higher damage
+        ctx.lineCap = 'round';
         ctx.stroke();
         
+        // Draw impact particles at target
+        const particleCount = Math.floor(damageAmount * 10) + 3;
+        for (let i = 0; i < particleCount; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = Math.random() * 2 + 1;
+            const size = Math.random() * 2 + 1;
+            
+            const particle = {
+                x: target.x,
+                y: target.y,
+                radius: size,
+                color: attackerColor,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                life: Math.random() * 10 + 5,
+                maxLife: 15
+            };
+            
+            // If we have energy effects system available, use it
+            if (typeof energyEffects !== 'undefined') {
+                energyEffects.push(particle);
+            }
+        }
+        
         // Flash target
-        target.glowSize = 5;
+        target.glowSize = 7 + damageAmount * 3;
     }
     
     // Create heal visual effect
@@ -628,14 +679,54 @@ class Creature {
             }
         }
         
-        // Draw creature
+        // Draw creature with custom shape based on abilities
+        ctx.save();
         ctx.fillStyle = creatureColor;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.translate(this.x, this.y);
         
-        // Draw health bar
-        this.drawHealthBar();
+        // Scale based on size and apply pulsing effect for non-deceased creatures
+        const pulsingEffect = !this.deceased ? Math.sin(this.age * 0.1) * 0.1 + 1 : 1;
+        
+        // If deceased, shrink the creature slightly
+        const sizeMultiplier = this.deceased ? 0.7 : pulsingEffect;
+        
+        // Choose shape based on abilities and status
+        if (this.deceased) {
+            // Simple shape for deceased creatures
+            ctx.beginPath();
+            ctx.arc(0, 0, this.size * sizeMultiplier, 0, Math.PI * 2);
+            ctx.fill();
+        } else if (this.abilities[ABILITIES.SHIELD]) {
+            // Shield-shaped creatures (hexagon)
+            this.drawPolygon(6, this.size * sizeMultiplier);
+        } else if (this.abilities[ABILITIES.STRENGTH]) {
+            // Strong creatures (diamond/square)
+            this.drawPolygon(4, this.size * sizeMultiplier);
+        } else if (this.abilities[ABILITIES.SPEED]) {
+            // Fast creatures (triangle)
+            this.drawPolygon(3, this.size * sizeMultiplier);
+        } else if (this.abilities[ABILITIES.HEAL]) {
+            // Healing creatures (star shape)
+            this.drawStar(5, this.size * sizeMultiplier, this.size * 0.6 * sizeMultiplier);
+        } else if (this.abilities[ABILITIES.REPRODUCE]) {
+            // Reproductive creatures (flower shape)
+            this.drawFlower(this.size * sizeMultiplier);
+        } else if (this.abilities[ABILITIES.RANGE]) {
+            // Range creatures (octagon)
+            this.drawPolygon(8, this.size * sizeMultiplier);
+        } else {
+            // Default (circle)
+            ctx.beginPath();
+            ctx.arc(0, 0, this.size * sizeMultiplier, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        
+        ctx.restore();
+        
+        // Draw health bar for non-deceased creatures
+        if (!this.deceased) {
+            this.drawHealthBar();
+        }
         
         // Add glow effect
         if (settings.glowEffect && (this.glowSize > 0 || this.isElite) && !this.deceased) {
@@ -735,6 +826,63 @@ class Creature {
             ctx.fillStyle = abilityVisuals[ability].color;
             ctx.beginPath();
             ctx.arc(x, y, 3, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+    
+    // Helper method to draw a regular polygon
+    drawPolygon(sides, size) {
+        ctx.beginPath();
+        for (let i = 0; i < sides; i++) {
+            const angle = (i / sides) * Math.PI * 2 - Math.PI / 2;
+            const x = Math.cos(angle) * size;
+            const y = Math.sin(angle) * size;
+            if (i === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+        }
+        ctx.closePath();
+        ctx.fill();
+    }
+    
+    // Helper method to draw a star
+    drawStar(points, outerRadius, innerRadius) {
+        ctx.beginPath();
+        for (let i = 0; i < points * 2; i++) {
+            const radius = i % 2 === 0 ? outerRadius : innerRadius;
+            const angle = (i / (points * 2)) * Math.PI * 2 - Math.PI / 2;
+            const x = Math.cos(angle) * radius;
+            const y = Math.sin(angle) * radius;
+            if (i === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+        }
+        ctx.closePath();
+        ctx.fill();
+    }
+    
+    // Helper method to draw a flower shape
+    drawFlower(size) {
+        const petals = 5;
+        const petalSize = size * 0.5;
+        
+        // Draw center circle
+        ctx.beginPath();
+        ctx.arc(0, 0, size * 0.5, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Draw petals
+        for (let i = 0; i < petals; i++) {
+            const angle = (i / petals) * Math.PI * 2;
+            const x = Math.cos(angle) * size * 0.7;
+            const y = Math.sin(angle) * size * 0.7;
+            
+            ctx.beginPath();
+            ctx.arc(x, y, petalSize, 0, Math.PI * 2);
             ctx.fill();
         }
     }
