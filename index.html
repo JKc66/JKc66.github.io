@@ -3,87 +3,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Genetic Evolution</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧬</text></svg>">
-    <meta name="theme-color" content="#0f0c29">
+    <title>JKc66 — coming soon</title>
+    <meta name="description" content="Something new is taking shape.">
+    <meta name="theme-color" content="#F7F6F3">
+    <meta property="og:title" content="JKc66 — coming soon">
+    <meta property="og:description" content="Something new is taking shape.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://picsum.photos/seed/limewash/1200/630">
+    <link rel="canonical" href="https://jkc66.github.io/">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <canvas id="particleCanvas"></canvas>
-    
-    <!-- Settings Toggle Button -->
-    <button id="settingsToggle" aria-label="Toggle Settings">⚙️</button>
-    
-    <div id="controlPanel" class="hidden">
-        <div class="header">
-            <h1>Genetic Evolution</h1>
-            <button id="infoToggle" aria-label="Toggle Info"><span>ⓘ</span></button>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="ambient" aria-hidden="true"></div>
+    <div class="hero-wash" aria-hidden="true"></div>
+    <div id="cloudscape" class="cloudscape" aria-hidden="true"></div>
+
+    <main id="main" class="shell layout">
+        <div class="layout__copy">
+            <header class="masthead">
+                <p class="eyebrow">Personal site</p>
+                <h1 class="title">
+                    Something new is taking shape
+                    <span class="title-inline">
+                        <span class="title-inline__frame" aria-hidden="true">
+                            <img
+                                class="title-inline__img"
+                                src="https://picsum.photos/seed/studio/160/112"
+                                width="160"
+                                height="112"
+                                alt=""
+                                decoding="async"
+                                fetchpriority="high"
+                            >
+                        </span>
+                        here.
+                    </span>
+                </h1>
+            </header>
+
+            <section class="panel" aria-labelledby="status-heading">
+                <h2 id="status-heading" class="visually-hidden">Status</h2>
+                
+                <div class="status-badge">
+                    <span class="status-bolt-container">
+                        <i class="ph-fill ph-lightning status-bolt"></i>
+                    </span>
+                    <span class="status-copy">In progress</span>
+                </div>
+
+                <div class="action-zone">
+                    <a class="btn" href="https://github.com/JKc66">
+                        <i class="ph ph-github-logo"></i>
+                        GitHub
+                    </a>
+                    <div class="signature-wrap">
+                        <svg
+                            class="signature-mark"
+                            viewBox="0 0 168 60"
+                            xmlns="http://www.w3.org/2000/svg"
+                            role="img"
+                            aria-label="JK initials"
+                        >
+                            <text
+                                class="signature-text"
+                                x="2"
+                                y="42"
+                                dominant-baseline="alphabetic"
+                            >JK</text>
+                            <!-- Light flourish: short arc tucked under the initials -->
+                            <path
+                                class="signature-mark__stroke signature-mark__stroke--swash"
+                                pathLength="1"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M 10 46.6 Q 44 48.6 76 46.35 Q 92 45.05 100 43.15"
+                            />
+                        </svg>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="foot">
+                <p class="fine-print">&copy; <span id="year"></span> JKc66.</p>
+            </footer>
         </div>
-        
-        <div class="controls">
-            <div class="control-group">
-                <label for="evolutionRate">Evolution Rate</label>
-                <input type="range" id="evolutionRate" min="0" max="0.05" step="0.005" value="0.01">
+
+        <aside class="layout__media" aria-label="Visual moodboard">
+            <div class="visual-bento">
+                <figure class="tile tile--hero">
+                    <div class="tile__chrome">
+                        <img
+                            src="https://picsum.photos/seed/limewash/900/1100"
+                            srcset="
+                                https://picsum.photos/seed/limewash/600/740 600w,
+                                https://picsum.photos/seed/limewash/900/1100 900w
+                            "
+                            sizes="(min-width: 900px) 42vw, 100vw"
+                            width="900"
+                            height="1100"
+                            alt="Foggy forest with tall trees and soft sunbeams through the mist, no people in frame"
+                            decoding="async"
+                            loading="eager"
+                        >
+                    </div>
+                    <figcaption class="tile__cap">Forest mist</figcaption>
+                </figure>
+                <figure class="tile tile--top">
+                    <div class="tile__chrome">
+                        <img
+                            src="https://picsum.photos/id/16/640/520"
+                            srcset="
+                                https://picsum.photos/id/16/420/340 420w,
+                                https://picsum.photos/id/16/640/520 640w
+                            "
+                            sizes="(min-width: 900px) 28vw, 50vw"
+                            width="640"
+                            height="520"
+                            alt="Calm sea and sky with distant horizon and rocky shore, no people in frame"
+                            decoding="async"
+                            loading="lazy"
+                        >
+                    </div>
+                    <figcaption class="tile__cap">Tide line</figcaption>
+                </figure>
+                <figure class="tile tile--btm">
+                    <div class="tile__chrome">
+                        <img
+                            src="https://picsum.photos/id/28/640/520"
+                            srcset="
+                                https://picsum.photos/id/28/420/340 420w,
+                                https://picsum.photos/id/28/640/520 640w
+                            "
+                            sizes="(min-width: 900px) 28vw, 50vw"
+                            width="640"
+                            height="520"
+                            alt="Forest brook with green trees, rocks, and moving water, no people in frame"
+                            decoding="async"
+                            loading="lazy"
+                        >
+                    </div>
+                    <figcaption class="tile__cap">Forest brook</figcaption>
+                </figure>
             </div>
-            
-            <div class="control-group">
-                <label for="initialCount">Creature Count</label>
-                <input type="range" id="initialCount" min="20" max="200" step="10">
-            </div>
-            
-            <div class="control-group toggle">
-                <label for="showStats">Show Stats</label>
-                <input type="checkbox" id="showStats" checked>
-                <span class="toggle-slider"></span>
-            </div>
-            
-            <div class="control-group toggle">
-                <label for="glowEffect">Glow Effects</label>
-                <input type="checkbox" id="glowEffect" checked>
-                <span class="toggle-slider"></span>
-            </div>
-        </div>
-        
-        <div class="actions">
-            <button id="resetBtn">Reset Simulation</button>
-            <button id="balanceBtn">Balance Teams</button>
-        </div>
-    </div>
-    
-    <div id="infoPanel">
-        <h2>About This Simulation</h2>
-        <p>Watch as red and blue creatures evolve through natural selection. Each creature has unique abilities that can be passed to offspring with potential mutations.</p>
-        
-        <h3>Abilities</h3>
-        <ul class="abilities-list">
-            <li><span class="ability-icon">⚡</span> <strong>Speed</strong>: Move faster to catch prey or escape predators</li>
-            <li><span class="ability-icon">💪</span> <strong>Strength</strong>: Deal more damage in combat</li>
-            <li><span class="ability-icon">🔭</span> <strong>Range</strong>: Detect enemies and allies from further away</li>
-            <li><span class="ability-icon">🛡️</span> <strong>Shield</strong>: Reduce damage taken from attacks</li>
-            <li><span class="ability-icon">❤️</span> <strong>Heal</strong>: Restore health to nearby allies</li>
-            <li><span class="ability-icon">🧬</span> <strong>Reproduce</strong>: More efficiently create offspring</li>
-        </ul>
-        
-        <h3>Interaction</h3>
-        <p>Click or tap anywhere to boost nearby creatures of the team that's falling behind, helping maintain evolutionary balance.</p>
-        
-        <div class="footer">
-            <button id="closeInfo">Close</button>
-        </div>
-    </div>
-    
-    <!-- Load JS files in correct dependency order -->
-    <script src="js/config.js"></script>
-    <script src="js/utils.js"></script>
-    <script src="js/canvas.js"></script>
-    <script src="js/effects.js"></script>
-    <script src="js/creature.js"></script>
-    <script src="js/ui.js"></script>
-    <script src="js/evolution.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/controls.js"></script>
+        </aside>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.clouds.min.js"></script>
+    <script>
+        document.getElementById("year").textContent = String(new Date().getFullYear());
+
+        let cloudsEffect = null;
+
+        function hasCloudLibrary() {
+            return typeof window.THREE !== "undefined"
+                && typeof window.VANTA !== "undefined"
+                && typeof window.VANTA.CLOUDS === "function";
+        }
+
+        function enableClouds(retriesLeft = 40) {
+            if (cloudsEffect) {
+                return;
+            }
+
+            const cloudscapeElement = document.getElementById("cloudscape");
+
+            if (!cloudscapeElement) {
+                return;
+            }
+
+            if (!hasCloudLibrary()) {
+                if (retriesLeft > 0) {
+                    window.setTimeout(() => enableClouds(retriesLeft - 1), 150);
+                }
+                return;
+            }
+
+            try {
+                cloudsEffect = window.VANTA.CLOUDS({
+                    el: cloudscapeElement,
+                    THREE: window.THREE,
+                    mouseControls: true,
+                    touchControls: true,
+                    gyroControls: false,
+                    minHeight: 200.00,
+                    minWidth: 200.00,
+                    backgroundColor: 0xffffff,
+                    skyColor: 0x68b8d7,
+                    cloudColor: 0xadc1de,
+                    cloudShadowColor: 0x183550,
+                    sunColor: 0xff9919,
+                    sunGlareColor: 0xff6633,
+                    sunlightColor: 0xff9933,
+                    speed: 1.0
+                });
+            } catch (err) {
+                console.error("Vanta init error:", err.message);
+            }
+        }
+
+        function disableClouds() {
+            if (!cloudsEffect) {
+                return;
+            }
+
+            cloudsEffect.destroy();
+            cloudsEffect = null;
+        }
+
+        // Trigger entrance animations and mount the cloud background.
+        window.addEventListener("DOMContentLoaded", () => {
+            document.querySelector(".shell.layout").classList.add("is-visible");
+            enableClouds();
+        });
+
+        window.addEventListener("load", enableClouds);
+    </script>
 </body>
 </html>
