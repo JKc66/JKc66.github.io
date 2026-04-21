@@ -89,7 +89,7 @@ body {
     inset: 0;
     pointer-events: none;
     z-index: 1;
-    background-image: url("https://picsum.photos/seed/warmhaze/1600/900");
+    background-image: url("https://picsum.photos/seed/botanical/1600/900");
     background-size: cover;
     background-position: 58% 42%;
     opacity: 0.07;
