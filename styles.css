@@ -3,8 +3,6 @@
     --ink: #111111;
     --muted: #787774;
     --line: #eaeaea;
-    --accent-surface: #e1f3fe;
-    --accent-ink: #1f6c9f;
     --badge-surface: #dff3e4;
     --badge-ink: #14532d;
     --badge-border: rgba(20, 83, 45, 0.14);
@@ -33,7 +31,6 @@ body {
     color: var(--ink);
     background-color: var(--canvas);
     -webkit-font-smoothing: antialiased;
-    overflow-x: clip;
 }
 
 .skip-link {
@@ -426,7 +423,7 @@ body {
 .status-bolt {
     display: inline-block;
     font-size: 1rem;
-    animation: bolt-pulse 1.5s ease-in-out infinite !important;
+    animation: bolt-pulse 1.5s ease-in-out infinite;
     will-change: transform, opacity;
     color: var(--bolt-blue);
 }
