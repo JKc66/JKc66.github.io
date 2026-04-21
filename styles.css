@@ -3,9 +3,6 @@
     --ink: #111111;
     --muted: #787774;
     --line: #eaeaea;
-    --badge-surface: #dff3e4;
-    --badge-ink: #14532d;
-    --badge-border: rgba(20, 83, 45, 0.14);
     --bolt-yellow: #facc15;
     --focus: rgba(17, 17, 17, 0.18);
     --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -84,10 +81,7 @@ body {
         radial-gradient(680px 440px at 95% 110%, rgba(31, 108, 159, 0.03), transparent 55%);
 }
 
-/* ───────────────────────────────────────────
-   Vanta.js 3D Cloudscape
-   ─────────────────────────────────────────── */
-
+/* Vanta.js 3D Cloudscape */
 .cloudscape {
     position: fixed;
     inset: 0;
@@ -103,7 +97,6 @@ body {
     .cloudscape {
         top: -15%;
         height: 120%;
-        z-index: 1;
     }
 }
 
@@ -117,15 +110,30 @@ body {
     z-index: 1;
 }
 
-/* ───────────────────────────────────────────
-   Layout
-   ─────────────────────────────────────────── */
+.cloudscape::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    opacity: 0;
+    z-index: 2;
+    pointer-events: none;
+    animation: background-lightning 12s infinite;
+}
 
+@keyframes background-lightning {
+    0%, 41%, 47%, 100% { opacity: 0; }
+    42% { opacity: 0.15; }
+    43% { opacity: 0.05; }
+    44% { opacity: 0.2; }
+    46% { opacity: 0; }
+}
+
+/* Layout */
 .shell.layout {
     position: relative;
     z-index: 4;
     width: 100%;
-    max-width: 100%;
     margin: 0 auto;
     min-height: 100dvh;
     padding: clamp(2.5rem, 8vw, 6rem) 1.5rem;
@@ -133,18 +141,16 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0;
     overflow-x: hidden;
 }
 
-.shell.layout.is-visible .masthead { opacity: 1; }
-.shell.layout.is-visible .panel { opacity: 1; }
-.shell.layout.is-visible .foot { opacity: 1; }
-.shell.layout.is-visible .layout__media { opacity: 1; }
-
-
-/* Entry animations removed as per request */
-
+.shell.layout.is-visible .masthead,
+.shell.layout.is-visible .panel,
+.shell.layout.is-visible .foot,
+.shell.layout.is-visible .layout__media {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+}
 
 .layout__copy {
     display: flex;
@@ -152,7 +158,6 @@ body {
     gap: clamp(2rem, 4vw, 2.75rem);
     width: 100%;
     max-width: 44rem;
-    min-width: 0;
     text-align: center;
     align-items: center;
     z-index: 10;
@@ -163,9 +168,6 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 1rem;
-}
-
-.masthead, .panel, .foot {
     opacity: 0;
     will-change: transform, opacity;
 }
@@ -188,7 +190,6 @@ body {
     line-height: 1.1;
     letter-spacing: -0.03em;
     text-wrap: balance;
-    text-align: center;
 }
 
 .title-inline {
@@ -207,8 +208,6 @@ body {
     background: #000;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
-
-
 
 .title-inline__img {
     display: block;
@@ -232,121 +231,61 @@ body {
     pointer-events: none;
 }
 
-/* ───────────────────────────────────────────
-   Media / Moodboard
-   ─────────────────────────────────────────── */
-
+/* Media / Moodboard */
 .layout__media {
     position: absolute;
     inset: 0;
     pointer-events: none;
     z-index: 1;
+    opacity: 0;
+    will-change: opacity;
 }
 
 .visual-bento {
     position: relative;
     width: 100%;
     height: 100%;
-    overflow: visible;
 }
 
 .tile {
     position: absolute;
     margin: 0;
+    padding: 0.6rem;
+    border-radius: 2px;
+    background: #fff;
     transition: transform 400ms var(--ease-out), box-shadow 400ms var(--ease-out);
     pointer-events: auto;
+    width: clamp(240px, 22vw, 320px);
 }
 
 .tile--top {
     top: 10%;
     right: 5%;
-    width: clamp(240px, 22vw, 320px);
-    transform: rotate(3deg);
-    filter: drop-shadow(0 15px 35px rgba(0,0,0,0.12));
-}
-
-.tile--top {
-    background: #fff;
-    padding: 0.6rem;
-    border-radius: 2px;
-    box-shadow: 
-        0 1px 3px rgba(0,0,0,0.05),
-        0 20px 50px rgba(0,0,0,0.1);
     transform: rotate(2deg);
-}
-
-.tile--top .tile__chrome-wrap {
-    padding: 0;
-    background: none;
-}
-
-.tile--top .tile__chrome {
-    border: 1px solid rgba(0,0,0,0.06);
-    border-radius: 0;
-}
-
-
-
-
-
-
-
-
-
-
-.tile--top .tile__cap {
-    display: block;
-    bottom: 1.2rem;
-    font-family: "Newsreader", serif;
-    font-style: italic;
-    font-size: 0.68rem;
-    letter-spacing: 0.03em;
-    color: #222;
-    opacity: 0.8;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 20px 50px rgba(0,0,0,0.1);
 }
 
 .tile--btm {
     bottom: 8%;
     left: 8%;
-    width: clamp(240px, 22vw, 320px);
-    transform: rotate(-3deg);
-    filter: drop-shadow(0 20px 50px rgba(0,0,0,0.2));
-}
-
-.tile--btm {
-    background: #111;
-    padding: 0.6rem;
-    border-radius: 2px;
-    box-shadow: 
-        0 2px 5px rgba(0,0,0,0.1),
-        0 25px 60px rgba(0,0,0,0.25);
     transform: rotate(-2deg);
+    background: #111;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1), 0 25px 60px rgba(0,0,0,0.25);
 }
 
-.tile--btm .tile__chrome-wrap {
-    padding: 0;
-    background: none;
+.tile--top .tile__chrome {
+    border: 1px solid rgba(0,0,0,0.06);
 }
 
 .tile--btm .tile__chrome {
     border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 0;
 }
-
-
-
-
-
-.tile--btm .tile__cap { color: rgba(255,255,255,0.8); }
 
 .tile__chrome {
     position: relative;
-    height: 100%;
     aspect-ratio: 4/5;
-    min-height: 0;
     overflow: hidden;
     background: #f0f0f0;
-    border: 1px solid rgba(0,0,0,0.06);
 }
 
 .tile__chrome::after {
@@ -364,30 +303,22 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transform: scale(1.001);
     filter: grayscale(0.38) contrast(1.1) brightness(1.03);
-    transition:
-        transform 700ms var(--ease-out),
-        filter 520ms var(--ease-out);
+    transition: transform 700ms var(--ease-out), filter 520ms var(--ease-out);
 }
 
-/* Hover zoom removed as per request */
-
-
 .tile__cap {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0.65rem;
-    z-index: 3;
-    margin: 0;
+    margin: 0.6rem 0 0;
     text-align: center;
     font-size: 0.725rem;
     font-family: "Caveat", cursive;
     font-weight: 500;
     letter-spacing: 0.02em;
     color: var(--muted);
-    text-shadow: none;
+}
+
+.tile--btm .tile__cap {
+    color: rgba(255,255,255,0.8);
 }
 
 .tile:hover {
@@ -395,68 +326,14 @@ body {
     z-index: 10;
 }
 
-@media (max-width: 1024px) {
-    .tile--top { width: 180px; right: 1%; top: 8%; }
-    .tile--btm { width: 190px; left: 20%; bottom: 4%; }
-}
-
-@media (max-width: 768px) {
-    .shell.layout {
-        justify-content: center;
-        padding-top: 0;
-        height: 100dvh;
-        overflow: hidden;
-    }
-
-    .title-inline__img {
-        display: none;
-    }
-
-    .title-inline__frame {
-        background: var(--ink);
-    }
-
-    .layout__media {
-        display: block;
-        position: absolute;
-        inset: 0;
-        z-index: 1;
-        pointer-events: none;
-        opacity: 1;
-    }
-
-    .tile {
-        position: absolute !important;
-        width: 100px !important;
-    }
-
-    .tile--top {
-        top: auto !important;
-        bottom: 8% !important;
-        right: 4% !important;
-        transform: rotate(3deg) !important;
-    }
-
-    .tile--btm {
-        bottom: 2% !important;
-        left: 4% !important;
-        transform: rotate(-3deg) !important;
-    }
-}
-
-
-
-
-
-/* ───────────────────────────────────────────
-   Status Badge & Thunder Bolt
-   ─────────────────────────────────────────── */
-
+/* Status Badge & Thunder Bolt */
 .panel {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1.5rem;
+    opacity: 0;
+    will-change: transform, opacity;
 }
 
 .status-badge {
@@ -474,16 +351,9 @@ body {
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    width: fit-content;
     border: 1px solid rgba(255, 255, 255, 0.25);
-    box-shadow:
-        0 4px 15px rgba(0, 0, 0, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.35),
-        0 0 0 1px rgba(255, 255, 255, 0.05);
-    transition:
-        transform 200ms var(--ease-out),
-        background-color 200ms ease,
-        border-color 200ms ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    transition: transform 200ms var(--ease-out), background-color 200ms ease, border-color 200ms ease;
 }
 
 .status-badge:hover {
@@ -504,7 +374,6 @@ body {
     display: block;
     width: 16px;
     height: 18px;
-    overflow: visible;
 }
 
 .thunder-bolt {
@@ -525,30 +394,7 @@ body {
     52% { opacity: 0.4; }
 }
 
-.cloudscape::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: #fff;
-    opacity: 0;
-    z-index: 2;
-    pointer-events: none;
-    animation: background-lightning 12s infinite;
-}
-
-
-@keyframes background-lightning {
-    0%, 41%, 47%, 100% { opacity: 0; }
-    42% { opacity: 0.15; }
-    43% { opacity: 0.05; }
-    44% { opacity: 0.2; }
-    46% { opacity: 0; }
-}
-
-/* ───────────────────────────────────────────
-   Action Zone / Signature / Buttons
-   ─────────────────────────────────────────── */
-
+/* Action Zone / Signature / Buttons */
 .action-zone {
     display: flex;
     flex-direction: column;
@@ -574,36 +420,18 @@ body {
 }
 
 .signature-text {
-    font-family: "Caveat", "Segoe Script", "Bradley Hand", cursive;
+    font-family: "Caveat", cursive;
     font-size: 3.15rem;
-    font-style: normal;
     font-weight: 700;
-    letter-spacing: 0.01em;
     fill: currentColor;
     opacity: 0;
     transform: translate3d(0, 6px, 0);
+    transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out);
 }
 
 .shell.layout.is-visible .signature-text {
     opacity: 1;
     transform: translate3d(0, 0, 0);
-}
-
-
-
-
-
-@keyframes signature-ink {
-    to {
-        opacity: 1;
-        transform: translate3d(0, 0, 0);
-    }
-}
-
-@keyframes signature-draw {
-    to {
-        stroke-dashoffset: 0;
-    }
 }
 
 .btn {
@@ -618,16 +446,13 @@ body {
     font-weight: 600;
     font-size: 0.9375rem;
     border: 1px solid var(--ink);
-    transition:
-        background-color 200ms var(--ease-out),
-        border-color 200ms var(--ease-out),
-        transform 160ms var(--ease-out);
+    text-decoration: none;
+    transition: background-color 200ms var(--ease-out), border-color 200ms var(--ease-out), transform 160ms var(--ease-out);
 }
 
 .btn-icon {
     width: 1.1rem;
     height: 1.1rem;
-    flex-shrink: 0;
 }
 
 .btn:active {
@@ -642,6 +467,8 @@ body {
 .foot {
     margin-top: auto;
     padding-top: 0.5rem;
+    opacity: 0;
+    will-change: opacity;
 }
 
 .fine-print {
@@ -651,40 +478,67 @@ body {
     text-align: center;
 }
 
+/* Responsiveness */
+@media (max-width: 1024px) {
+    .tile--top { width: 180px; right: 1%; top: 8%; }
+    .tile--btm { width: 190px; left: 20%; bottom: 4%; }
+}
+
+@media (max-width: 768px) {
+    .shell.layout {
+        height: 100dvh;
+        padding-top: 0;
+        overflow: hidden;
+    }
+
+    .title-inline__img {
+        display: none;
+    }
+
+    .title-inline__frame {
+        background: var(--ink);
+    }
+
+    .layout__media {
+        opacity: 1;
+    }
+
+    .tile {
+        width: 100px;
+    }
+
+    .tile--top {
+        top: auto;
+        bottom: 8%;
+        right: 4%;
+        transform: rotate(3deg);
+    }
+
+    .tile--btm {
+        bottom: 2%;
+        left: 4%;
+        transform: rotate(-3deg);
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     html {
         scroll-behavior: auto;
     }
 
-    .shell.layout {
-        animation: none;
-    }
-
-    .btn:active {
+    .btn:active,
+    .tile:hover {
         transform: none;
     }
 
-    .tile__chrome img {
+    .tile__chrome img,
+    .signature-text {
         transition: none;
-    }
-
-    .signature-mark__stroke,
-    .shell.layout.is-visible .signature-mark__stroke--swash {
-        animation: none;
-        stroke-dashoffset: 0;
     }
 
     .signature-text,
     .shell.layout.is-visible .signature-text {
-        animation: none;
         opacity: 1;
         transform: none;
-    }
-
-    @media (hover: hover) and (pointer: fine) {
-        .tile:hover .tile__chrome img {
-            transform: none;
-            filter: grayscale(0.38) contrast(1.1) brightness(1.03);
-        }
     }
 }
