@@ -200,9 +200,9 @@ body {
     display: inline-block;
     position: relative;
     vertical-align: -0.22em;
-    width: clamp(5.8rem, 16vw, 8.5rem);
-    height: clamp(2.35rem, 7vw, 3.45rem);
-    margin: 0 0.5rem;
+    width: clamp(7rem, 22vw, 11rem);
+    height: clamp(2.8rem, 9vw, 4.5rem);
+    margin: 0 0.8rem;
     border-radius: 9999px;
     overflow: hidden;
     background: #000;
@@ -491,13 +491,7 @@ body {
         overflow: hidden;
     }
 
-    .title-inline__img {
-        display: none;
-    }
 
-    .title-inline__frame {
-        background: var(--ink);
-    }
 
     .layout__media {
         opacity: 1;
