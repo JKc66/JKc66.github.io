@@ -26,7 +26,6 @@
     <a class="skip-link" href="#main">Skip to content</a>
     <div class="grain" aria-hidden="true"></div>
     <div class="ambient" aria-hidden="true"></div>
-    <div class="hero-wash" aria-hidden="true"></div>
     <div id="cloudscape" class="cloudscape" aria-hidden="true"></div>
 
     <main id="main" class="shell layout">
@@ -163,35 +162,36 @@
         </aside>
     </main>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.clouds.min.js"></script>
     <script>
         document.getElementById("year").textContent = String(new Date().getFullYear());
 
         let cloudsEffect = null;
 
-        function hasCloudLibrary() {
-            return typeof window.THREE !== "undefined"
-                && typeof window.VANTA !== "undefined"
-                && typeof window.VANTA.CLOUDS === "function";
+        function loadScript(src) {
+            return new Promise((resolve, reject) => {
+                const s = document.createElement("script");
+                s.src = src;
+                s.onload = resolve;
+                s.onerror = reject;
+                document.body.appendChild(s);
+            });
         }
 
-        function enableClouds(retriesLeft = 40) {
-            if (cloudsEffect) {
-                return;
-            }
-
-            const cloudscapeElement = document.getElementById("cloudscape");
-            if (!cloudscapeElement) return;
-
-            if (!hasCloudLibrary()) {
-                if (retriesLeft > 0) {
-                    window.setTimeout(() => enableClouds(retriesLeft - 1), 200);
-                }
-                return;
-            }
+        async function initVanta() {
+            if (cloudsEffect) return;
 
             try {
+                // Load Three.js and Vanta only when needed
+                if (typeof window.THREE === "undefined") {
+                    await loadScript("https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js");
+                }
+                if (typeof window.VANTA === "undefined" || !window.VANTA.CLOUDS) {
+                    await loadScript("https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.clouds.min.js");
+                }
+
+                const cloudscapeElement = document.getElementById("cloudscape");
+                if (!cloudscapeElement) return;
+
                 cloudsEffect = window.VANTA.CLOUDS({
                     el: cloudscapeElement,
                     THREE: window.THREE,
@@ -210,23 +210,21 @@
                     speed: 1.0
                 });
             } catch (err) {
-                console.error("Vanta init error:", err.message);
+                console.error("Vanta initialization failed:", err);
             }
         }
 
-        function disableClouds() {
-            if (!cloudsEffect) return;
-            cloudsEffect.destroy();
-            cloudsEffect = null;
-        }
+        const scheduleInit = () => {
+            if ("requestIdleCallback" in window) {
+                window.requestIdleCallback(() => initVanta(), { timeout: 4000 });
+            } else {
+                setTimeout(initVanta, 2000);
+            }
+        };
 
         window.addEventListener("DOMContentLoaded", () => {
             document.querySelector(".shell.layout").classList.add("is-visible");
-            enableClouds();
-        });
-
-        window.addEventListener("load", () => {
-            if (!cloudsEffect) enableClouds();
+            scheduleInit();
         });
     </script>
 </body>
