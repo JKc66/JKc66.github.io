@@ -146,6 +146,7 @@ body {
     gap: clamp(1.75rem, 4vw, 3rem);
     align-content: center;
     align-items: center;
+    will-change: opacity;
 }
 
 .shell.layout .masthead,
@@ -432,12 +433,12 @@ body {
     0%, 90%, 100% { 
         opacity: 1; 
         transform: scale(1); 
-        filter: drop-shadow(0 0 0px var(--bolt-blue)); 
     }
     92% { 
         opacity: 1; 
         transform: scale(1.4) rotate(-10deg); 
-        filter: drop-shadow(0 0 12px var(--bolt-blue)) brightness(1.5); 
+        color: #fff;
+        text-shadow: 0 0 12px var(--bolt-blue);
     }
     94% { 
         opacity: 0.4; 
@@ -446,7 +447,7 @@ body {
     96% { 
         opacity: 1; 
         transform: scale(1.3) rotate(-5deg); 
-        filter: drop-shadow(0 0 8px var(--bolt-blue)) brightness(1.3); 
+        text-shadow: 0 0 8px var(--bolt-blue);
     }
 }
 
