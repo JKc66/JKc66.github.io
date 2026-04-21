@@ -99,12 +99,12 @@ body {
         radial-gradient(ellipse 60% 38% at 82% 72%, rgba(196, 211, 231, 0.24), transparent 70%);
 }
 
-/* Mobile: push clouds higher so they sit above the content area */
+/* Mobile: push clouds higher but keep them behind content */
 @media (max-width: 600px) {
     .cloudscape {
         top: -15%;
         height: 120%;
-        z-index: 5;
+        z-index: 1; /* Keep behind layout (z-index 4) */
     }
 }
 
@@ -468,65 +468,43 @@ body {
 }
 
 .thunder-bolt {
-    animation: thunder-strike 2s step-end infinite;
-    filter: drop-shadow(0 0 4px var(--bolt-yellow));
+    animation: thunder-strike 3s step-end infinite;
+    filter: drop-shadow(0 0 6px var(--bolt-yellow));
+    opacity: 0.4; /* Always visible, just dimmer when not striking */
 }
 
 @keyframes thunder-strike {
-    0% {
-        opacity: 0;
-    }
+    0%, 100% { opacity: 0.4; filter: drop-shadow(0 0 4px var(--bolt-yellow)); }
+    2% { opacity: 1; filter: drop-shadow(0 0 12px var(--bolt-yellow)) brightness(1.5); }
+    4% { opacity: 0.6; }
+    6% { opacity: 1; filter: drop-shadow(0 0 12px var(--bolt-yellow)) brightness(1.5); }
+    10% { opacity: 0.4; }
+    /* Main double strike */
+    42% { opacity: 1; filter: drop-shadow(0 0 15px var(--bolt-yellow)) brightness(1.8); }
+    44% { opacity: 0.7; }
+    46% { opacity: 1; filter: drop-shadow(0 0 15px var(--bolt-yellow)) brightness(1.8); }
+    52% { opacity: 0.4; }
+}
 
-    2% {
-        opacity: 1;
-    }
+/* Background Lightning Flash */
+.cloudscape::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    opacity: 0;
+    z-index: 2;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+    animation: background-lightning 12s infinite;
+}
 
-    4% {
-        opacity: 0;
-    }
-
-    5% {
-        opacity: 1;
-    }
-
-    7% {
-        opacity: 0;
-    }
-
-    /* Main strike */
-    10% {
-        opacity: 1;
-        filter: drop-shadow(0 0 8px var(--bolt-yellow)) brightness(1.5);
-    }
-
-    12% {
-        opacity: 0.7;
-    }
-
-    14% {
-        opacity: 1;
-    }
-
-    16% {
-        opacity: 0.8;
-    }
-
-    18% {
-        opacity: 1;
-    }
-
-    /* Fade out */
-    45% {
-        opacity: 1;
-    }
-
-    55% {
-        opacity: 0;
-    }
-
-    100% {
-        opacity: 0;
-    }
+@keyframes background-lightning {
+    0%, 41%, 47%, 100% { opacity: 0; }
+    42% { opacity: 0.15; }
+    43% { opacity: 0.05; }
+    44% { opacity: 0.2; }
+    46% { opacity: 0; }
 }
 
 /* ───────────────────────────────────────────
