@@ -253,7 +253,8 @@ body {
     justify-content: center;
     color: #fff;
     font-family: "Newsreader", serif;
-    font-size: 1em; /* Matches parent headline scale */
+    font-size: 1em;
+    /* Matches parent headline scale */
     font-weight: 500;
     font-style: italic;
     pointer-events: none;
@@ -427,12 +428,14 @@ body {
     width: fit-content;
     /* Static Glass Border: A crisp outer stroke + a sharp top highlight */
     border: 1px solid rgba(255, 255, 255, 0.25);
-    box-shadow: 
+    box-shadow:
         0 4px 15px rgba(0, 0, 0, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.35), /* Top edge shine */
-        0 0 0 1px rgba(255, 255, 255, 0.05); /* Subtle outer glow */
-    transition: 
-        transform 200ms var(--ease-out), 
+        inset 0 1px 0 rgba(255, 255, 255, 0.35),
+        /* Top edge shine */
+        0 0 0 1px rgba(255, 255, 255, 0.05);
+    /* Subtle outer glow */
+    transition:
+        transform 200ms var(--ease-out),
         background-color 200ms ease,
         border-color 200ms ease;
 }
@@ -464,86 +467,64 @@ body {
     overflow: visible;
 }
 
-/* The bolt path gets a clip-path wipe animation: top → bottom reveal */
 .thunder-bolt {
-    animation: thunder-strike 2s ease-in-out infinite;
+    animation: thunder-strike 2s step-end infinite;
+    filter: drop-shadow(0 0 4px var(--bolt-yellow));
 }
 
-/*
-   Thunder-strike keyframes:
-   - Idle (hidden) → Strike 1 (wipe down) → Flash → Off →
-   - Strike 2 (faster) → Flash → Hold visible → Fade out → Pause
-*/
 @keyframes thunder-strike {
-
-    /* Idle: bolt hidden */
     0% {
-        clip-path: inset(0 0 100% 0);
         opacity: 0;
     }
 
-    /* Prepare to strike */
+    2% {
+        opacity: 1;
+    }
+
+    4% {
+        opacity: 0;
+    }
+
     5% {
-        clip-path: inset(0 0 100% 0);
         opacity: 1;
     }
 
-    /* STRIKE 1: wipe top → bottom */
+    7% {
+        opacity: 0;
+    }
+
+    /* Main strike */
+    10% {
+        opacity: 1;
+        filter: drop-shadow(0 0 8px var(--bolt-yellow)) brightness(1.5);
+    }
+
     12% {
-        clip-path: inset(0 0 0% 0);
-        opacity: 1;
-    }
-
-    /* Flash bright */
-    13% {
-        opacity: 0.3;
+        opacity: 0.7;
     }
 
     14% {
         opacity: 1;
     }
 
-    /* Brief off */
+    16% {
+        opacity: 0.8;
+    }
+
     18% {
-        clip-path: inset(0 0 100% 0);
-        opacity: 0;
-    }
-
-    /* STRIKE 2: faster re-strike */
-    20% {
-        clip-path: inset(0 0 100% 0);
-        opacity: 1;
-    }
-
-    26% {
-        clip-path: inset(0 0 0% 0);
-        opacity: 1;
-    }
-
-    /* Flash 2 */
-    27% {
-        opacity: 0.25;
-    }
-
-    28% {
-        opacity: 1;
-    }
-
-    /* Hold visible */
-    55% {
-        clip-path: inset(0 0 0% 0);
         opacity: 1;
     }
 
     /* Fade out */
-    65% {
-        clip-path: inset(0 0 0% 0);
+    45% {
+        opacity: 1;
+    }
+
+    55% {
         opacity: 0;
     }
 
-    /* Pause until next loop */
     100% {
-        clip-path: inset(0 0 100% 0);
         opacity: 0;
     }
 }
