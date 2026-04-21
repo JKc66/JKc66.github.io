@@ -163,8 +163,8 @@
         </aside>
     </main>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.clouds.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.clouds.min.js"></script>
     <script>
         document.getElementById("year").textContent = String(new Date().getFullYear());
 
@@ -177,7 +177,7 @@
         }
 
         function enableClouds(retriesLeft = 40) {
-            if (cloudsEffect || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            if (cloudsEffect) {
                 return;
             }
 
@@ -207,7 +207,7 @@
                     sunColor: 0xff9919,
                     sunGlareColor: 0xff6633,
                     sunlightColor: 0xff9933,
-                    speed: 0.8
+                    speed: 1.0
                 });
             } catch (err) {
                 console.error("Vanta init error:", err.message);
@@ -222,8 +222,7 @@
 
         window.addEventListener("DOMContentLoaded", () => {
             document.querySelector(".shell.layout").classList.add("is-visible");
-            // Delay Vanta slightly to prioritize main content paint
-            setTimeout(enableClouds, 500);
+            enableClouds();
         });
 
         window.addEventListener("load", () => {
