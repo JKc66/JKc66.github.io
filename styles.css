@@ -427,12 +427,7 @@ body {
 
 /* The bolt path gets a clip-path wipe animation: top → bottom reveal */
 .thunder-bolt {
-    animation: thunder-strike 3.2s ease-in-out infinite;
-}
-
-/* Subtle badge glow synced to the strike moments */
-.status-badge {
-    animation: badge-glow 3.2s ease-in-out infinite;
+    animation: thunder-strike 2s ease-in-out infinite;
 }
 
 /*
@@ -448,72 +443,57 @@ body {
     }
 
     /* Prepare to strike */
-    28% {
+    5% {
         clip-path: inset(0 0 100% 0);
         opacity: 1;
     }
 
     /* STRIKE 1: wipe top → bottom */
-    34% {
+    12% {
         clip-path: inset(0 0 0% 0);
         opacity: 1;
     }
 
     /* Flash bright */
-    35% { opacity: 0.3; }
-    36% { opacity: 1; }
+    13% { opacity: 0.3; }
+    14% { opacity: 1; }
 
     /* Brief off */
-    38% {
+    18% {
         clip-path: inset(0 0 100% 0);
         opacity: 0;
     }
 
     /* STRIKE 2: faster re-strike */
-    40% {
+    20% {
         clip-path: inset(0 0 100% 0);
         opacity: 1;
     }
-    44% {
+    26% {
         clip-path: inset(0 0 0% 0);
         opacity: 1;
     }
 
     /* Flash 2 */
-    45% { opacity: 0.25; }
-    46% { opacity: 1; }
+    27% { opacity: 0.25; }
+    28% { opacity: 1; }
 
     /* Hold visible */
-    65% {
+    55% {
         clip-path: inset(0 0 0% 0);
         opacity: 1;
     }
 
     /* Fade out */
-    72% {
+    65% {
         clip-path: inset(0 0 0% 0);
         opacity: 0;
     }
 
-    /* Stay hidden until next loop */
+    /* Pause until next loop */
     100% {
-        clip-path: inset(0 0 0% 0);
+        clip-path: inset(0 0 100% 0);
         opacity: 0;
-    }
-}
-
-@keyframes badge-glow {
-    0%, 27%, 39%, 100% {
-        box-shadow: none;
-    }
-    35% {
-        box-shadow: 0 0 12px rgba(31, 108, 159, 0.2), inset 0 0 5px rgba(31, 108, 159, 0.07);
-    }
-    45% {
-        box-shadow: 0 0 10px rgba(31, 108, 159, 0.16), inset 0 0 4px rgba(31, 108, 159, 0.06);
-    }
-    50% {
-        box-shadow: none;
     }
 }
 
