@@ -4,13 +4,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JKc66 — coming soon</title>
-    <meta name="description" content="Something new is taking shape.">
+    <title>Jawad Khan — Personal Site & Portfolio</title>
+    <meta name="description"
+        content="Jawad Khan — Something new is taking shape. Islamic University of Madinah alumni. Explore my personal portfolio and latest projects.">
+    <meta name="keywords"
+        content="Jawad Khan, JKc66, Portfolio, Islamic University of Madinah, IU Madinah, Web Design, Personal Website">
+    <meta name="author" content="Jawad Khan">
+    <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#F7F6F3">
-    <meta property="og:title" content="JKc66 — coming soon">
-    <meta property="og:description" content="Something new is taking shape.">
+
+    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:image" content="https://picsum.photos/seed/limewash/1200/630">
+    <meta property="og:url" content="https://jkc66.github.io/">
+    <meta property="og:title" content="Jawad Khan — Personal Site & Portfolio">
+    <meta property="og:description"
+        content="Something new is taking shape. Explore the latest work of Jawad Khan, IU alumni.">
+    <meta property="og:image" content="https://jkc66.github.io/og_preview.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://jkc66.github.io/">
+    <meta property="twitter:title" content="Jawad Khan — Personal Site & Portfolio">
+    <meta property="twitter:description"
+        content="Something new is taking shape. Explore the latest work of Jawad Khan, IU alumni.">
+    <meta property="twitter:image" content="https://jkc66.github.io/og_preview.png">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Jawad Khan",
+      "url": "https://jkc66.github.io/",
+      "image": "https://jkc66.github.io/og_preview.png",
+      "alumniOf": {
+        "@type": "CollegeOrUniversity",
+        "name": "Islamic University of Madinah"
+      },
+      "description": "Jawad Khan — Islamic University of Madinah alumni. Explore my personal portfolio and latest projects.",
+      "sameAs": [
+        "https://github.com/JKc66"
+      ]
+    }
+    </script>
+
     <link rel="canonical" href="https://jkc66.github.io/">
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -31,10 +68,23 @@
 </head>
 
 <body>
-    <a class="skip-link" href="#main">Skip to content</a>
     <div class="grain" aria-hidden="true"></div>
     <div class="ambient" aria-hidden="true"></div>
-    <div id="cloudscape" class="cloudscape" aria-hidden="true"></div>
+    <div id="cloudscape" class="cloudscape" aria-hidden="true">
+        <div class="cloudscape-layer"></div>
+    </div>
+    <svg style="display: none;">
+        <!-- Filter for wispy, fractal cloud edges -->
+        <filter id="cloud-texture">
+            <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="5" seed="5" />
+            <feDisplacementMap in="SourceGraphic" scale="140" />
+        </filter>
+        <!-- Filter for puffy, volumetric depth -->
+        <filter id="cloud-puff">
+            <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="40" />
+        </filter>
+    </svg>
 
     <main id="main" class="shell layout">
         <div class="layout__copy">
@@ -45,7 +95,8 @@
                     <span class="title-inline">
                         <span class="title-inline__frame">
                             <img class="title-inline__img" src="https://picsum.photos/seed/studio/160/112" width="160"
-                                height="112" alt="" decoding="async" fetchpriority="high">
+                                height="112" alt="A minimalist studio workspace with clean aesthetics" decoding="async"
+                                fetchpriority="high">
                             <span class="title-inline__label">shape</span>
                         </span>
                         here.
@@ -81,7 +132,8 @@
                     <div class="signature-wrap">
                         <svg class="signature-mark" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg" role="img"
                             aria-label="JK initials">
-                            <text class="signature-text" x="50%" y="42" text-anchor="middle" dominant-baseline="alphabetic">JK</text>
+                            <text class="signature-text" x="50%" y="42" text-anchor="middle"
+                                dominant-baseline="alphabetic">JK</text>
 
                         </svg>
                     </div>
@@ -89,7 +141,7 @@
             </section>
 
             <footer class="foot">
-                <p class="fine-print">&copy; <span id="year"></span> JKc66.</p>
+                <p class="fine-print">&copy; <span id="year"></span> Jawad Khan.</p>
             </footer>
         </div>
 
@@ -126,68 +178,9 @@
     <script>
         document.getElementById("year").textContent = String(new Date().getFullYear());
 
-        /* ── Vanta.js 3D Clouds (deferred, non-blocking) ── */
-        let cloudsEffect = null;
-
-        function loadScript(src) {
-            return new Promise((resolve, reject) => {
-                const s = document.createElement("script");
-                s.src = src;
-                s.async = true;
-                s.onload = resolve;
-                s.onerror = reject;
-                document.body.appendChild(s);
-            });
-        }
-
-        async function initVanta() {
-            if (cloudsEffect) return;
-
-            try {
-                if (typeof window.THREE === "undefined") {
-                    await loadScript("https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js");
-                }
-                if (typeof window.VANTA === "undefined" || !window.VANTA.CLOUDS) {
-                    await loadScript("https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.clouds.min.js");
-                }
-
-                const el = document.getElementById("cloudscape");
-                if (!el) return;
-
-                cloudsEffect = window.VANTA.CLOUDS({
-                    el: el,
-                    THREE: window.THREE,
-                    mouseControls: false,
-                    touchControls: false,
-                    gyroControls: false,
-                    minHeight: 200.00,
-                    minWidth: 200.00,
-                    backgroundColor: 0xffffff,
-                    skyColor: 0x68b8d7,
-                    cloudColor: 0xadc1de,
-                    cloudShadowColor: 0x183550,
-                    sunColor: 0xff9919,
-                    sunGlareColor: 0xff6633,
-                    sunlightColor: 0xff9933,
-                    speed: 1.0
-                });
-            } catch (err) {
-                console.error("Vanta initialization failed:", err);
-            }
-        }
-
         window.addEventListener("DOMContentLoaded", () => {
             document.querySelector(".shell.layout").classList.add("is-visible");
-
-            // Defer Vanta loading until after first paint
-            if ("requestIdleCallback" in window) {
-                window.requestIdleCallback(() => initVanta(), { timeout: 4000 });
-            } else {
-                setTimeout(initVanta, 2000);
-            }
         });
-
-
     </script>
 </body>
 
