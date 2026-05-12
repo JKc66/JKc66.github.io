@@ -5,6 +5,25 @@
     --bolt-yellow: #facc15;
     --focus: rgba(17, 17, 17, 0.18);
     --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --sig-color: rgba(17, 17, 17, 0.5);
+}
+
+:root[data-theme="dark"] {
+    --canvas: #111111;
+    --ink: #f7f6f3;
+    --muted: #a1a1aa;
+    --focus: rgba(247, 246, 243, 0.18);
+    --sig-color: rgba(247, 246, 243, 0.5);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --canvas: #111111;
+        --ink: #f7f6f3;
+        --muted: #a1a1aa;
+        --focus: rgba(247, 246, 243, 0.18);
+        --sig-color: rgba(247, 246, 243, 0.5);
+    }
 }
 
 *,
@@ -15,12 +34,13 @@
 
 html {
     scroll-behavior: smooth;
-    overflow-x: clip;
+    overflow: hidden;
 }
 
 body {
     margin: 0;
     min-height: 100dvh;
+    overflow: hidden;
     font-family: "DM Sans", "Helvetica Neue", system-ui, sans-serif;
     font-size: 1.0625rem;
     line-height: 1.6;
@@ -52,68 +72,28 @@ body {
 
 
 
-/* High-End Static Cloudscape - Bottom Clouds / Top Sun */
+/* Dynamic Image Background */
 .cloudscape {
     position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 1;
     overflow: hidden;
-    /* Sky Gradient: Deep blue top to lighter blue bottom */
-    background: linear-gradient(to bottom, #4a99b8, #68b8d7 50%, #b8d9e6 85%);
+    background-image: url('bg-day.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: background-image 0.5s ease;
 }
 
-/* The Sun - Enhanced Premium Glow */
-.cloudscape::after {
-    content: "";
-    position: absolute;
-    top: 4%;
-    left: 4%;
-    width: 130px;
-    height: 130px;
-    /* Core sun color */
-    background: radial-gradient(circle at center, #fffceb 0%, #ffdb4d 40%, #ffae00 100%);
-    filter: blur(4px);
-    border-radius: 50%;
-    opacity: 0.95;
-    /* Layered glow for realistic light falloff */
-    box-shadow: 
-        0 0 20px #fff,
-        0 0 60px #ffcc00,
-        0 0 120px rgba(255, 179, 0, 0.6),
-        0 0 250px rgba(255, 102, 0, 0.3),
-        /* Distant halo */
-        0 0 0 40px rgba(255, 255, 255, 0.05);
-    z-index: 2;
+:root[data-theme="dark"] .cloudscape {
+    background-image: url('bg-night.webp');
 }
 
-/* The Volumetric Cloud Bed - Positioned at the bottom */
-.cloudscape::before {
-    content: "";
-    position: absolute;
-    inset: -30% -20%;
-    background: 
-        /* Dense bottom clouds */
-        radial-gradient(circle at 15% 95%, #ffffff 0%, transparent 45%),
-        radial-gradient(circle at 45% 98%, #f0f8ff 0%, transparent 40%),
-        radial-gradient(circle at 80% 96%, #ffffff 0%, transparent 45%),
-        /* Cloud shadows and volume */
-        radial-gradient(circle at 30% 92%, #183550 0%, transparent 35%),
-        radial-gradient(circle at 65% 94%, #183550 0%, transparent 35%),
-        /* Mid-level wisps */
-        radial-gradient(ellipse at 50% 88%, rgba(255, 255, 255, 0.8) 0%, transparent 40%);
-    filter: url(#cloud-texture) url(#cloud-puff) blur(5px);
-    opacity: 0.85;
-    z-index: 1;
-}
-
-/* Soft atmospheric haze at the horizon */
-.cloudscape-layer {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(255,255,255,0.5) 0%, transparent 30%);
-    opacity: 0.6;
-    z-index: 3;
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .cloudscape {
+        background-image: url('bg-night.webp');
+    }
 }
 
 /* Layout */
@@ -121,14 +101,12 @@ body {
     position: relative;
     z-index: 4;
     width: 100%;
-    margin: 0 auto;
-    min-height: 100dvh;
+    height: 100dvh;
     padding: clamp(2.5rem, 8vw, 6rem) 1.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    overflow-x: hidden;
 }
 
 .shell.layout.is-visible .masthead,
@@ -142,7 +120,7 @@ body {
 .layout__copy {
     display: flex;
     flex-direction: column;
-    gap: clamp(2rem, 4vw, 2.75rem);
+    gap: clamp(1.5rem, 3vw, 2.5rem);
     width: 100%;
     max-width: 44rem;
     text-align: center;
@@ -237,24 +215,24 @@ body {
 .tile {
     position: absolute;
     margin: 0;
-    padding: 0.6rem;
+    padding: 0.5rem;
     border-radius: 2px;
     background: #fff;
     transition: transform 400ms var(--ease-out), box-shadow 400ms var(--ease-out);
     pointer-events: auto;
-    width: clamp(240px, 22vw, 320px);
+    width: clamp(160px, 15vw, 220px);
 }
 
 .tile--top {
-    top: 10%;
-    right: 5%;
+    top: 25%;
+    right: 3%;
     transform: rotate(2deg);
     box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 20px 50px rgba(0,0,0,0.1);
 }
 
 .tile--btm {
-    bottom: 8%;
-    left: 8%;
+    bottom: 12%;
+    left: 4%;
     transform: rotate(-2deg);
     background: #111;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1), 0 25px 60px rgba(0,0,0,0.25);
@@ -353,20 +331,21 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 16px;
-    height: 18px;
+    width: 22px;
+    height: 22px;
+    margin-left: -2px; /* Slight offset for optics */
 }
 
-.thunder-icon {
+.status-gif {
     display: block;
-    width: 16px;
-    height: 18px;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
-.thunder-bolt {
-    animation: thunder-strike 3s step-end infinite;
-    filter: drop-shadow(0 0 6px var(--bolt-yellow));
-    opacity: 0.4;
+/* Redundant after switching to GIF */
+.thunder-icon, .thunder-bolt {
+    display: none;
 }
 
 @keyframes thunder-strike {
@@ -389,14 +368,95 @@ body {
     gap: 1.5rem;
 }
 
+/* Theme Toggle Button & Animation */
+.theme-toggle-wrap {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    display: flex;
+    justify-content: flex-end;
+    z-index: 100;
+}
+
+.theme-toggle {
+    background: rgba(17, 17, 17, 0.1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--ink);
+    cursor: pointer;
+    padding: 0.75rem;
+    border-radius: 50%;
+    transition: all 0.3s var(--ease-out);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .theme-toggle {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+    background: var(--focus);
+}
+
+.sun-and-moon > :is(.moon, .sun, .sun-beams) {
+    transform-origin: center center;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), fill 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sun-and-moon > .sun-beams {
+    stroke: currentColor;
+    stroke-width: 2px;
+}
+
+[data-theme="dark"] .sun-and-moon > .sun {
+    transform: scale(1.75);
+}
+[data-theme="dark"] .sun-and-moon > .sun-beams {
+    opacity: 0;
+}
+[data-theme="dark"] .sun-and-moon > .moon > circle {
+    transform: translateX(-7px);
+}
+
+@supports (cx: 1) {
+    [data-theme="dark"] .sun-and-moon > .moon > circle {
+        transform: translateX(0);
+        cx: 17;
+    }
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .sun-and-moon > .sun {
+        transform: scale(1.75);
+    }
+    :root:not([data-theme="light"]) .sun-and-moon > .sun-beams {
+        opacity: 0;
+    }
+    :root:not([data-theme="light"]) .sun-and-moon > .moon > circle {
+        transform: translateX(-7px);
+    }
+    @supports (cx: 1) {
+        :root:not([data-theme="light"]) .sun-and-moon > .moon > circle {
+            transform: translateX(0);
+            cx: 17;
+        }
+    }
+}
+
 .signature-wrap {
     width: 100%;
     max-width: 200px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: rgba(17, 17, 17, 0.5);
+    color: var(--sig-color);
     transform: rotate(-2deg);
+    transition: color 0.3s ease;
 }
 
 .signature-mark {
@@ -428,11 +488,11 @@ body {
     gap: 0.5rem;
     padding: 0.65rem 1.1rem;
     border-radius: 5px;
-    background: var(--ink);
+    background: #111111;
     color: #fff;
     font-weight: 600;
     font-size: 0.9375rem;
-    border: 1px solid var(--ink);
+    border: 1px solid #111111;
     text-decoration: none;
     transition: background-color 200ms var(--ease-out), border-color 200ms var(--ease-out), transform 160ms var(--ease-out);
 }

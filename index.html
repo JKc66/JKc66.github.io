@@ -19,7 +19,7 @@
     <meta property="og:title" content="Jawad Khan — Personal Site & Portfolio">
     <meta property="og:description"
         content="Something new is taking shape. Explore the latest work of Jawad Khan, IU alumni.">
-    <meta property="og:image" content="https://jawadk.me/og_preview.png">
+    <meta property="og:image" content="https://jawadk.me/og_preview.webp">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
@@ -27,7 +27,7 @@
     <meta property="twitter:title" content="Jawad Khan — Personal Site & Portfolio">
     <meta property="twitter:description"
         content="Something new is taking shape. Explore the latest work of Jawad Khan, IU alumni.">
-    <meta property="twitter:image" content="https://jawadk.me/og_preview.png">
+    <meta property="twitter:image" content="https://jawadk.me/og_preview.webp">
 
     <!-- JSON-LD Structured Data -->
     <script type="application/ld+json">
@@ -36,7 +36,7 @@
       "@type": "Person",
       "name": "Jawad Khan",
       "url": "https://jawadk.me/",
-      "image": "https://jawadk.me/og_preview.png",
+      "image": "https://jawadk.me/og_preview.webp",
       "alumniOf": {
         "@type": "CollegeOrUniversity",
         "name": "Islamic University of Madinah"
@@ -86,6 +86,27 @@
     </svg>
 
     <main id="main" class="shell layout">
+        <div class="theme-toggle-wrap">
+            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+                <svg class="sun-and-moon" aria-hidden="true" width="24" height="24" viewBox="0 0 24 24">
+                    <mask class="moon" id="moon-mask">
+                        <rect x="0" y="0" width="100%" height="100%" fill="white" />
+                        <circle cx="24" cy="10" r="6" fill="black" />
+                    </mask>
+                    <circle class="sun" cx="12" cy="12" r="6" mask="url(#moon-mask)" fill="currentColor" />
+                    <g class="sun-beams" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="1" x2="12" y2="3" />
+                        <line x1="12" y1="21" x2="12" y2="23" />
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                        <line x1="1" y1="12" x2="3" y2="12" />
+                        <line x1="21" y1="12" x2="23" y2="12" />
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                    </g>
+                </svg>
+            </button>
+        </div>
         <div class="layout__copy">
             <header class="masthead">
                 <p class="eyebrow">Personal site</p>
@@ -108,12 +129,7 @@
 
                 <div class="status-badge">
                     <span class="status-bolt-container">
-                        <!-- Phosphor lightning-fill icon, animated with CSS clip-path strike -->
-                        <svg class="thunder-icon" viewBox="0 0 256 256" fill="none" aria-hidden="true">
-                            <path class="thunder-bolt"
-                                d="M215.79,118.17a8,8,0,0,0-5-5.66L153.18,90.9l14.66-73.33a8,8,0,0,0-13.69-7l-112,120a8,8,0,0,0,3,13.46l57.63,21.61L88.16,239.05a8,8,0,0,0,13.69,7l112-120A8,8,0,0,0,215.79,118.17Z"
-                                fill="var(--bolt-yellow)" />
-                        </svg>
+                        <img src="high-voltage.gif" alt="High voltage animation" class="status-gif" decoding="async">
                     </span>
                     <span class="status-copy">In progress</span>
                 </div>
@@ -162,7 +178,7 @@
                 <figure class="tile tile--btm">
                     <div class="tile__chrome-wrap">
                         <div class="tile__chrome">
-                            <img src="forest_brook.png" width="640" height="520"
+                            <img src="forest_brook.webp" width="640" height="520"
                                 alt="Premium photography of a crystal clear forest brook with lush green moss and soft sunlight"
                                 decoding="async" loading="lazy">
                         </div>
@@ -179,6 +195,27 @@
 
         window.addEventListener("DOMContentLoaded", () => {
             document.querySelector(".shell.layout").classList.add("is-visible");
+        });
+
+        const themeToggle = document.getElementById('theme-toggle');
+        
+        // Check for saved theme preference or use system preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+
+        themeToggle.addEventListener('click', () => {
+            let currentTheme = document.documentElement.getAttribute('data-theme');
+            if (!currentTheme) {
+                // Determine current scheme if no explicit attribute is set yet
+                const isSystemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                currentTheme = isSystemDark ? 'dark' : 'light';
+            }
+            
+            const targetTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', targetTheme);
+            localStorage.setItem('theme', targetTheme);
         });
     </script>
 </body>
